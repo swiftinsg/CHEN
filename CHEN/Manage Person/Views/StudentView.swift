@@ -8,20 +8,18 @@
 import SwiftUI
 import SwiftNFC
 
-struct PersonView: View {
-    @ObservedObject var person: Person
+struct StudentView: View {
+    @ObservedObject var student: Student
     @ObservedObject var writer = NFCWriter()
     var body: some View {
         VStack {
-            Text(person.name ?? "")
+            Text(student.name ?? "")
             Button("Associate Card with User") {
-                if let personName = person.name, let personId = person.id {
+                if let personName = student.name {
                     
                     let writeText = "\(personName)"
                     writer.msg = writeText
                     writer.write()
-                    
-                    
                     
                 }
 

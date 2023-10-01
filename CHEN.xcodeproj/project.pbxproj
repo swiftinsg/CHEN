@@ -8,33 +8,37 @@
 
 /* Begin PBXBuildFile section */
 		1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C263E2A90BC5E002FE50E /* CHENApp.swift */; };
-		1A0C26412A90BC5E002FE50E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26402A90BC5E002FE50E /* ContentView.swift */; };
+		1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26402A90BC5E002FE50E /* HomeView.swift */; };
 		1A0C26432A90BC60002FE50E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C26422A90BC60002FE50E /* Assets.xcassets */; };
 		1A0C26462A90BC60002FE50E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C26452A90BC60002FE50E /* Preview Assets.xcassets */; };
 		1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26552A90C4AE002FE50E /* ScanView.swift */; };
-		1A1A5B112A90D06A00B6FDDD /* ManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B102A90D06A00B6FDDD /* ManageView.swift */; };
-		1A1A5B132A90D75800B6FDDD /* PersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B122A90D75800B6FDDD /* PersonView.swift */; };
+		1A1A5B112A90D06A00B6FDDD /* ManageStudentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */; };
+		1A1A5B132A90D75800B6FDDD /* StudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B122A90D75800B6FDDD /* StudentView.swift */; };
 		1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B162A90DD8500B6FDDD /* CHEN.xcdatamodeld */; };
 		1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B1F2A90E14A00B6FDDD /* DataController.swift */; };
-		1A1A5B432A91065700B6FDDD /* GenerateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B422A91065700B6FDDD /* GenerateView.swift */; };
-		1AE456882AA56BE3009CEE12 /* ManageLessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE456872AA56BE3009CEE12 /* ManageLessonView.swift */; };
+		1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE456872AA56BE3009CEE12 /* ManageLessonsView.swift */; };
 		1AE456972AA5C609009CEE12 /* SwiftNFC in Frameworks */ = {isa = PBXBuildFile; productRef = 1AE456962AA5C609009CEE12 /* SwiftNFC */; };
+		1AE456992AC92059009CEE12 /* LessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE456982AC92059009CEE12 /* LessonView.swift */; };
+		1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */; };
+		1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1A0C263B2A90BC5E002FE50E /* CHEN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0C263E2A90BC5E002FE50E /* CHENApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHENApp.swift; sourceTree = "<group>"; };
-		1A0C26402A90BC5E002FE50E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1A0C26402A90BC5E002FE50E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1A0C26422A90BC60002FE50E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A0C26452A90BC60002FE50E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1A0C264E2A90BF7B002FE50E /* CHEN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CHEN.entitlements; sourceTree = "<group>"; };
 		1A0C26552A90C4AE002FE50E /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
-		1A1A5B102A90D06A00B6FDDD /* ManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageView.swift; sourceTree = "<group>"; };
-		1A1A5B122A90D75800B6FDDD /* PersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonView.swift; sourceTree = "<group>"; };
+		1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageStudentsView.swift; sourceTree = "<group>"; };
+		1A1A5B122A90D75800B6FDDD /* StudentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentView.swift; sourceTree = "<group>"; };
 		1A1A5B172A90DD8500B6FDDD /* CHEN.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CHEN.xcdatamodel; sourceTree = "<group>"; };
 		1A1A5B1F2A90E14A00B6FDDD /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
-		1A1A5B422A91065700B6FDDD /* GenerateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateView.swift; sourceTree = "<group>"; };
-		1AE456872AA56BE3009CEE12 /* ManageLessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageLessonView.swift; sourceTree = "<group>"; };
+		1AE456872AA56BE3009CEE12 /* ManageLessonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageLessonsView.swift; sourceTree = "<group>"; };
+		1AE456982AC92059009CEE12 /* LessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonView.swift; sourceTree = "<group>"; };
+		1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStudentSheet.swift; sourceTree = "<group>"; };
+		1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLessonSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +79,7 @@
 				1AE456802AA568C9009CEE12 /* Manage Person */,
 				1A0C263E2A90BC5E002FE50E /* CHENApp.swift */,
 				1A0C26512A90C01C002FE50E /* Models */,
-				1A0C26402A90BC5E002FE50E /* ContentView.swift */,
-				1A1A5B422A91065700B6FDDD /* GenerateView.swift */,
+				1A0C26402A90BC5E002FE50E /* HomeView.swift */,
 				1A0C26422A90BC60002FE50E /* Assets.xcassets */,
 				1A0C26442A90BC60002FE50E /* Preview Content */,
 			);
@@ -111,8 +114,9 @@
 		1AE456812AA568E5009CEE12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1A1A5B102A90D06A00B6FDDD /* ManageView.swift */,
-				1A1A5B122A90D75800B6FDDD /* PersonView.swift */,
+				1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */,
+				1A1A5B122A90D75800B6FDDD /* StudentView.swift */,
+				1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -136,7 +140,9 @@
 		1AE456842AA56942009CEE12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1AE456872AA56BE3009CEE12 /* ManageLessonView.swift */,
+				1AE456872AA56BE3009CEE12 /* ManageLessonsView.swift */,
+				1AE456982AC92059009CEE12 /* LessonView.swift */,
+				1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -240,15 +246,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A1A5B132A90D75800B6FDDD /* PersonView.swift in Sources */,
-				1A1A5B112A90D06A00B6FDDD /* ManageView.swift in Sources */,
+				1A1A5B132A90D75800B6FDDD /* StudentView.swift in Sources */,
+				1A1A5B112A90D06A00B6FDDD /* ManageStudentsView.swift in Sources */,
+				1AE456992AC92059009CEE12 /* LessonView.swift in Sources */,
 				1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */,
-				1A0C26412A90BC5E002FE50E /* ContentView.swift in Sources */,
+				1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */,
 				1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */,
+				1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */,
 				1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */,
-				1A1A5B432A91065700B6FDDD /* GenerateView.swift in Sources */,
 				1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */,
-				1AE456882AA56BE3009CEE12 /* ManageLessonView.swift in Sources */,
+				1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */,
+				1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
