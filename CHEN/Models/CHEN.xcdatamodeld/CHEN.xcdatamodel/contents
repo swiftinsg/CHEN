@@ -16,6 +16,7 @@
         <attribute name="batch" attributeType="Integer 16" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="cardID" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="indexNumber" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="lessonsAttended" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="person" inverseEntity="Attendance"/>
     </entity>

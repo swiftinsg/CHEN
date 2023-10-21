@@ -11,9 +11,9 @@ struct HomeView: View {
     var body: some View {
         TabView {
             
-                ScanView()
+                SelectLessonView()
                     .tabItem {
-                        Label("Scan", systemImage: "barcode.viewfinder")
+                        Label("Mark Attendance", systemImage: "barcode.viewfinder")
                     }
                     .navigationTitle("Scan")
                 ManageLessonsView()

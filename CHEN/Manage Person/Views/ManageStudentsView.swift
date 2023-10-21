@@ -12,7 +12,6 @@ struct ManageStudentsView: View {
     @State var showAddSheet: Bool = false
     var body: some View {
         NavigationStack {
-            
             VStack {
                 List(students) { student in
                     NavigationLink {

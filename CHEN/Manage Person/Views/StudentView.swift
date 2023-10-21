@@ -15,11 +15,15 @@ struct StudentView: View {
         VStack {
             Text(student.name ?? "")
             Button("Associate Card with User") {
-                if let personName = student.name {
+                if let personId = student.id, let name = student.name {
                     
-                    let writeText = "\(personName)"
+                    let writeText = "\(personId)"
+                    writer.startAlert = "Please scan the card to be associated with this student."
                     writer.msg = writeText
                     writer.write()
+                    
+    
+                    writer.endAlert = "Scanned card registered as \(name)"
                     
                 }
 

@@ -7,30 +7,60 @@
 
 import SwiftUI
 import SwiftNFC
+import CoreData
 import CoreNFC
 
 struct ScanView: View {
     @ObservedObject var reader = NFCReader()
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.managedObjectContext) private var moc
+    
+    @State var studentName: String = "Nothing scanned yet"
+    @State var lesson: Lesson
+    
     var body: some View {
         VStack {
-            Text(reader.msg)
+            Text(studentName)
             Button {
-                    reader.read()
+                reader.read()
             } label: {
                 Text("Click here to scan")
             }
         }
         .onAppear {
-            reader.msg = "Nothing scanned yet"
             reader.startAlert = "Scanning..."
         }
-        .onChange(of: reader.msg) { newValue in
-            if newValue == "Nothing scanned yet" { return }
+        .onChange(of: reader.msg) { scannedID in
+            if scannedID == "Nothing scanned yet" { return }
+            print("Card read: \(scannedID)")
+            // Find individual
             
-            print("Card read: \(newValue)")
+            // Sanitise the scanned UUID
+            guard let studentUUID = UUID(uuidString: scannedID) else { reader.endAlert = "This isn't a CHEN enrolled card!"; return }
+            let fetchRequest: NSFetchRequest<Student>
+            fetchRequest = Student.fetchRequest()
+            fetchRequest.predicate = NSPredicate(
+                format: "%K == %@", "id", studentUUID as CVarArg
+            )
+            
+            do {
+                let students = try moc.fetch(fetchRequest)
+                guard let foundStudent = students.first else { return }
+                if let name = foundStudent.name {
+                    studentName = name
+                }
+            } catch {
+                print("There was an error fetching the student")
+            }
         }
+        
+        
+        
+        
+        // Add record for lesson for individual
         
     }
     
-
 }
+
