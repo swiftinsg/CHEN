@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */; };
+		1A0BB4072AFE3AFA00A19359 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0BB4062AFE3AFA00A19359 /* AlertToast */; };
 		1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C263E2A90BC5E002FE50E /* CHENApp.swift */; };
 		1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26402A90BC5E002FE50E /* HomeView.swift */; };
 		1A0C26432A90BC60002FE50E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C26422A90BC60002FE50E /* Assets.xcassets */; };
@@ -25,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStudentView.swift; sourceTree = "<group>"; };
 		1A0C263B2A90BC5E002FE50E /* CHEN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0C263E2A90BC5E002FE50E /* CHENApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHENApp.swift; sourceTree = "<group>"; };
 		1A0C26402A90BC5E002FE50E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -49,6 +52,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AE456972AA5C609009CEE12 /* SwiftNFC in Frameworks */,
+				1A0BB4072AFE3AFA00A19359 /* AlertToast in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +123,7 @@
 				1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */,
 				1A1A5B122A90D75800B6FDDD /* StudentView.swift */,
 				1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */,
+				1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -191,6 +196,7 @@
 			name = CHEN;
 			packageProductDependencies = (
 				1AE456962AA5C609009CEE12 /* SwiftNFC */,
+				1A0BB4062AFE3AFA00A19359 /* AlertToast */,
 			);
 			productName = CHEN;
 			productReference = 1A0C263B2A90BC5E002FE50E /* CHEN.app */;
@@ -222,6 +228,7 @@
 			mainGroup = 1A0C26322A90BC5E002FE50E;
 			packageReferences = (
 				1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */,
+				1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = 1A0C263C2A90BC5E002FE50E /* Products */;
 			projectDirPath = "";
@@ -260,6 +267,7 @@
 				1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */,
 				1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */,
 				1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */,
+				1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */,
 				1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -477,6 +485,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/serotonincrash/SwiftNFC";
@@ -488,6 +504,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1A0BB4062AFE3AFA00A19359 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
+		};
 		1AE456962AA5C609009CEE12 /* SwiftNFC */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */;

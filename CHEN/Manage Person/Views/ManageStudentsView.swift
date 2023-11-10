@@ -10,6 +10,8 @@ import CoreData
 struct ManageStudentsView: View {
     @FetchRequest(sortDescriptors: [.init(keyPath: \Student.id, ascending: true)]) var students: FetchedResults<Student>
     @State var showAddSheet: Bool = false
+    var deletedStudent: Int = 0
+    @State var showDeleteAlert: Bool = false
     var body: some View {
         NavigationStack {
             VStack {
@@ -19,14 +21,33 @@ struct ManageStudentsView: View {
                     } label: {
                         Text(student.name ?? "Unknown Data")
                     }
+
+                    .swipeActions {
+                        NavigationStack {
+                            NavigationLink {
+                                EditStudentView(student: student)
+                                    .navigationTitle("Edit Student")
+                            } label: {
+                                Button {
+                                    
+                                } label: {
+                                    Text("Edit")
+                                }
+
+                            }
+
+                            
+                        }
+                        Button(role: .destructive) {
+                            print("delete button pressed")
+                        } label: {
+                            Text("Delete")
+                        }
+                    }
                 }
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button {
-                            print("Edit button pressed")
-                        } label: {
-                            Image(systemName: "pencil.line")
-                        }
+                        EditButton()
                         Button {
                             showAddSheet = true
                         } label: {
@@ -37,9 +58,10 @@ struct ManageStudentsView: View {
                 .sheet(isPresented: $showAddSheet) {
                     NavigationStack {
                         AddStudentSheet()
-                            .navigationTitle(Text("Create Student"))
+                            .navigationTitle("Create Student")
                     }   
                 }
+                
                 .navigationTitle(Text("Students"))
             }
         }

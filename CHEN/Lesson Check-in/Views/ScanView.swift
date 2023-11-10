@@ -38,8 +38,7 @@ struct ScanView: View {
             
             // Sanitise the scanned UUID
             guard let studentUUID = UUID(uuidString: scannedID) else { reader.endAlert = "This isn't a CHEN enrolled card!"; return }
-            let fetchRequest: NSFetchRequest<Student>
-            fetchRequest = Student.fetchRequest()
+            let fetchRequest: NSFetchRequest<Student> = Student.fetchRequest()
             fetchRequest.predicate = NSPredicate(
                 format: "%K == %@", "id", studentUUID as CVarArg
             )
@@ -49,9 +48,19 @@ struct ScanView: View {
                 guard let foundStudent = students.first else { return }
                 if let name = foundStudent.name {
                     studentName = name
+                    
+                    // create attendance object
+                    let attendance = Attendance(context: moc)
+                    attendance.attendanceType = 1
+                    attendance.forLesson = lesson
+                    attendance.recordedAt = Date.now
+
+                    attendance.person = foundStudent
+                    
+                    try moc.save()
                 }
             } catch {
-                print("There was an error fetching the student")
+                print("There was an error fetching the student: \(error)")
             }
         }
         

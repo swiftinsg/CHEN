@@ -30,8 +30,15 @@ struct StudentView: View {
             }
             .padding()
             .buttonStyle(.borderedProminent)
+            Text("Attended Lessons")
+                .font(.title)
+            List(student.lessonsAttended?.allObjects as? [Attendance] ?? []) { attendanceRecord in
+                Text("\(attendanceRecord.forLesson!.lessonLabel!): \(attendanceRecord.forLesson!.name!)")
+            }
         }
         
     }
+    
+    
 }
 
