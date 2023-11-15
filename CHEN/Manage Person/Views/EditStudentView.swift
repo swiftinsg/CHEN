@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftNFC
+import AlertToast
 
 struct EditStudentView: View {
     @Environment(\.dismiss) private var dismiss
@@ -24,6 +25,8 @@ struct EditStudentView: View {
     
     @State var cardID: String = ""
     
+    @Binding var alertToast: AlertToast
+    @Binding var showChangeToast: Bool
     var body: some View {
         Form {
             Section(header: Text("Student Information")) {
@@ -47,14 +50,23 @@ struct EditStudentView: View {
                     
                     // Toast notification after saving
                 } catch {
-                    print("An error occured whilst saving the new student.")
+                    
+                    showChangeToast = true
+                    alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
+                    
                 }
             }
             .disabled(student.indexNumber! == "" || student.name == "")
         }
         .onAppear() {
-            writer.completionHandler = {
+            writer.completionHandler = { error in
                 DispatchQueue.main.async {
+                    if let error = error {
+                        
+                        print(error.localizedDescription)
+                    }
+                    showChangeToast = true
+                    alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "Update successful")
                     dismiss()
                 }
             }
@@ -66,7 +78,11 @@ struct EditStudentView: View {
                 writer.msg = "\(student.id!)"
                 writer.write()
             }
-            Button("No", role: .cancel) { dismiss() }
+            Button("No", role: .cancel) {
+                showChangeToast = true
+                alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "Update successful")
+                dismiss()
+            }
         }
     }
 }

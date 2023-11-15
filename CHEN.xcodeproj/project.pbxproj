@@ -120,9 +120,9 @@
 		1AE456812AA568E5009CEE12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */,
 				1A1A5B122A90D75800B6FDDD /* StudentView.swift */,
 				1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */,
+				1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */,
 				1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */,
 			);
 			path = Views;

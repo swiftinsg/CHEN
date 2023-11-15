@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftNFC
+import AlertToast
 
 struct AddStudentSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -19,6 +20,9 @@ struct AddStudentSheet: View {
     @State var batch: Int = Calendar.current.dateComponents([.year], from: Date()).year!
     
     @State var cardID: String = ""
+    
+    @Binding var showChangeToast: Bool
+    @Binding var alertToast: AlertToast
     var body: some View {
         Form {
             Section(header: Text("Student Information")) {
@@ -48,7 +52,9 @@ struct AddStudentSheet: View {
                 do {
                     try moc.save()
                 } catch {
-                    print("An error occured whilst saving the new student.")
+                    showChangeToast = true
+                    alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
+                    dismiss()
                 }
                 
                 
@@ -56,7 +62,12 @@ struct AddStudentSheet: View {
             .disabled(indexNumber == "" || name == "")
         }
         .onAppear() {
-            writer.completionHandler = {
+            writer.completionHandler = { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                showChangeToast = true
+                alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "User created")
                 dismiss()
             }
         }

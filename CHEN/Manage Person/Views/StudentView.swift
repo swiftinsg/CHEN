@@ -22,7 +22,6 @@ struct StudentView: View {
                     writer.msg = writeText
                     writer.write()
                     
-    
                     writer.endAlert = "Scanned card registered as \(name)"
                     
                 }
@@ -34,6 +33,12 @@ struct StudentView: View {
                 .font(.title)
             List(student.lessonsAttended?.allObjects as? [Attendance] ?? []) { attendanceRecord in
                 Text("\(attendanceRecord.forLesson!.lessonLabel!): \(attendanceRecord.forLesson!.name!)")
+            }
+        }.onAppear {
+            writer.completionHandler = { error in
+                if let unwrappedError = error {
+                    print(unwrappedError.localizedDescription)
+                }
             }
         }
         
