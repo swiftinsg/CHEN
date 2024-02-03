@@ -21,8 +21,7 @@ struct StudentView: View {
                     writer.startAlert = "Please scan the card to be associated with this student."
                     writer.msg = writeText
                     writer.write()
-                    
-                    writer.endAlert = "Scanned card registered as \(name)"
+                    writer.endAlert = "Scanned card registered as \(name)."
                     
                 }
 

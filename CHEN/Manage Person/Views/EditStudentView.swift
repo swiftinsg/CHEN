@@ -62,7 +62,6 @@ struct EditStudentView: View {
             writer.completionHandler = { error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        
                         print(error.localizedDescription)
                     }
                     showChangeToast = true

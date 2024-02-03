@@ -54,8 +54,8 @@ struct AddStudentSheet: View {
                 } catch {
                     showChangeToast = true
                     alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
-                    dismiss()
                 }
+                dismiss()
                 
                 
             }

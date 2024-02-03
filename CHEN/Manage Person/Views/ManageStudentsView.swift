@@ -14,15 +14,30 @@ struct ManageStudentsView: View {
     @State var showAddSheet: Bool = false
     var deletedStudent: Int = 0
     
-    @State var showDeleteAlert: Bool = false
+    var searchedStudents: [Student] {
+        let studentsArray = students.compactMap { student in
+            student
+        }
+        switch search {
+        case "":
+            return studentsArray
+        default:
+            return studentsArray.filter { student in
+                student.name!.localizedCaseInsensitiveContains(search)
+            }
+        }
+    }
     
+    @State var showDeleteAlert: Bool = false
+    @State var search: String = ""
     @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "Sample Alert")
     @State var showChangeToast: Bool = false
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
-                    List(students) { student in
+                    // Implement searches properly (see LessonView)
+                    List(searchedStudents) { student in
                         NavigationLink {
                             StudentView(student: student)
                         } label: {
@@ -68,6 +83,7 @@ struct ManageStudentsView: View {
                                 .navigationTitle("Create Student")
                         }
                     }
+                    .searchable(text: $search)
                 }
             }.navigationTitle(Text("Students"))
         }
