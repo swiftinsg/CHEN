@@ -15,6 +15,8 @@
 		1A0C26462A90BC60002FE50E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C26452A90BC60002FE50E /* Preview Assets.xcassets */; };
 		1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26552A90C4AE002FE50E /* ScanView.swift */; };
 		1A0C28462B6DD4B800F3BFDF /* ManualAttendanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C28452B6DD4B800F3BFDF /* ManualAttendanceView.swift */; };
+		1A0C284A2B90669300F3BFDF /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C28492B90669300F3BFDF /* SettingsView.swift */; };
+		1A0C284C2B90695C00F3BFDF /* BackupPersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C284B2B90695C00F3BFDF /* BackupPersistentStore.swift */; };
 		1A1A5B112A90D06A00B6FDDD /* ManageStudentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */; };
 		1A1A5B132A90D75800B6FDDD /* StudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B122A90D75800B6FDDD /* StudentView.swift */; };
 		1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B162A90DD8500B6FDDD /* CHEN.xcdatamodeld */; };
@@ -37,6 +39,8 @@
 		1A0C264E2A90BF7B002FE50E /* CHEN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CHEN.entitlements; sourceTree = "<group>"; };
 		1A0C26552A90C4AE002FE50E /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		1A0C28452B6DD4B800F3BFDF /* ManualAttendanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualAttendanceView.swift; sourceTree = "<group>"; };
+		1A0C28492B90669300F3BFDF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1A0C284B2B90695C00F3BFDF /* BackupPersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupPersistentStore.swift; sourceTree = "<group>"; };
 		1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageStudentsView.swift; sourceTree = "<group>"; };
 		1A1A5B122A90D75800B6FDDD /* StudentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentView.swift; sourceTree = "<group>"; };
 		1A1A5B172A90DD8500B6FDDD /* CHEN.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CHEN.xcdatamodel; sourceTree = "<group>"; };
@@ -80,6 +84,7 @@
 		1A0C263D2A90BC5E002FE50E /* CHEN */ = {
 			isa = PBXGroup;
 			children = (
+				1A0C28472B9065F200F3BFDF /* Settings */,
 				1AE4568B2AA5C105009CEE12 /* Helpers & Extensions */,
 				1AE456862AA569F2009CEE12 /* Entitlements & Misc Info */,
 				1AE456832AA5691B009CEE12 /* Lesson Check-in */,
@@ -109,6 +114,30 @@
 				1A1A5B1F2A90E14A00B6FDDD /* DataController.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		1A0C28472B9065F200F3BFDF /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				1A0C28482B90660100F3BFDF /* Views */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		1A0C28482B90660100F3BFDF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1A0C28492B90669300F3BFDF /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1A0C284D2B90697000F3BFDF /* Database Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				1A0C284B2B90695C00F3BFDF /* BackupPersistentStore.swift */,
+			);
+			path = "Database Helpers";
 			sourceTree = "<group>";
 		};
 		1AE456802AA568C9009CEE12 /* Manage Person */ = {
@@ -177,6 +206,7 @@
 		1AE4568B2AA5C105009CEE12 /* Helpers & Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				1A0C284D2B90697000F3BFDF /* Database Helpers */,
 			);
 			path = "Helpers & Extensions";
 			sourceTree = "<group>";
@@ -259,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A0C284A2B90669300F3BFDF /* SettingsView.swift in Sources */,
 				1A1A5B132A90D75800B6FDDD /* StudentView.swift in Sources */,
 				1A25B7082AE3E17C00A2B636 /* SelectLessonView.swift in Sources */,
 				1A1A5B112A90D06A00B6FDDD /* ManageStudentsView.swift in Sources */,
@@ -266,6 +297,7 @@
 				1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */,
 				1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */,
 				1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */,
+				1A0C284C2B90695C00F3BFDF /* BackupPersistentStore.swift in Sources */,
 				1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */,
 				1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */,
 				1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */,
