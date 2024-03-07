@@ -30,7 +30,7 @@ struct ManageStudentsView: View {
     
     @State var showDeleteAlert: Bool = false
     @State var search: String = ""
-    @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "Sample Alert")
+    @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "")
     @State var showChangeToast: Bool = false
     var body: some View {
         NavigationStack {

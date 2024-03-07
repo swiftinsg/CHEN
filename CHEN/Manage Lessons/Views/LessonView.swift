@@ -33,46 +33,49 @@ struct LessonView: View {
         }
     }
     var body: some View {
-        Text("Lesson \(lesson.lessonLabel ?? "Unknown ID"): \(lesson.name ?? "Unknown Lesson")")
-        
-        List {
-            if filteredAttendances.count != 0 {
-                ForEach(filteredAttendances, id: \.id) { attendanceRecord in
-                    HStack {
-                        Text(attendanceRecord.person!.name!)
-                        Spacer()
-                        Text(dateFormatter.string(from: attendanceRecord.recordedAt!))
-                            .font(.caption)
-                            .foregroundStyle(.gray)
+        VStack {
+            Text("Lesson \(lesson.lessonLabel ?? "Unknown ID"): \(lesson.name ?? "Unknown Lesson")")
+            Text(lesson.session ?? "Unknown Session")
+            List {
+                if filteredAttendances.count != 0 {
+                    ForEach(filteredAttendances, id: \.id) { attendanceRecord in
+                        HStack {
+                            Text(attendanceRecord.person!.name!)
+                            Spacer()
+                            Text(dateFormatter.string(from: attendanceRecord.recordedAt!))
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+                        }
                     }
-                }
-                .onDelete(perform: { indexSet in
-                    for index in indexSet {
-                        let attendance = filteredAttendances[index]
-                        moc.delete(attendance)
-                    }
-                    do {
-                        try moc.save()
-                    } catch {
-                        print(error.localizedDescription)
+                    .onDelete(perform: { indexSet in
+                        for index in indexSet {
+                            let attendance = filteredAttendances[index]
+                            moc.delete(attendance)
+                        }
+                        do {
+                            try moc.save()
+                        } catch {
+                            print(error.localizedDescription)
+                        }
+                        
+                    })
+                    
+                } else {
+                    if (lesson.attendances!.array as? [Attendance])!.count == 0 {
+                        ContentUnavailableView("No Attendances", systemImage: "pc", description: Text("No one attended this class :("))
+                            .symbolRenderingMode(.multicolor)
+                    } else {
+                        // Search query returned no results
+                        ContentUnavailableView("No Results Found", systemImage: "pc", description: Text("No results were found for this search query :("))
+                            .symbolRenderingMode(.multicolor)
                     }
                     
-                })
-                
-            } else {
-                if (lesson.attendances!.array as? [Attendance])!.count == 0 {
-                    ContentUnavailableView("No Attendances", systemImage: "pc", description: Text("No one attended this class :("))
-                        .symbolRenderingMode(.multicolor)
-                } else {
-                    // Search query returned no results
-                    ContentUnavailableView("No Results Found", systemImage: "pc", description: Text("No results were found for this search query :("))
-                        .symbolRenderingMode(.multicolor)
                 }
-                
+            
             }
-        
+            .searchable(text: $searchTerm)
         }
-        .searchable(text: $searchTerm)
+        
     }
     
 }

@@ -10,10 +10,9 @@ import SwiftUI
 struct HomeView: View {
     var body: some View {
         TabView {
-            
                 SelectLessonView()
                     .tabItem {
-                        Label("Mark Attendance", systemImage: "barcode.viewfinder")
+                        Label("Attendance", systemImage: "barcode.viewfinder")
                     }
                     .navigationTitle("Scan")
                 ManageLessonsView()
@@ -26,6 +25,10 @@ struct HomeView: View {
                         Label("Students", systemImage: "person.fill")
                     }
                     .navigationTitle("Students")
+                SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape")
+                }
             }
     }
 }

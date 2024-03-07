@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B81" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Attendance" representedClassName="Attendance" syncable="YES" codeGenerationType="class">
         <attribute name="attendanceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="recordedAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -11,6 +11,7 @@
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="lessonLabel" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="session" attributeType="String"/>
         <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Attendance" inverseName="forLesson" inverseEntity="Attendance"/>
     </entity>
     <entity name="Student" representedClassName="Student" syncable="YES" codeGenerationType="class">
@@ -19,6 +20,7 @@
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="indexNumber" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="session" optional="YES" attributeType="String"/>
         <relationship name="lessonsAttended" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="person" inverseEntity="Attendance"/>
     </entity>
 </model>

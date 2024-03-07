@@ -13,7 +13,7 @@ struct AddLessonSheet: View {
     @Environment(\.managedObjectContext) private var moc
     @State var name: String = ""
     @State var lessonLabel: String = ""
-    
+    @State var lessonSession: String = "AM"
     // Default to the current year
     @State var date: Date = Date()
     
@@ -30,18 +30,26 @@ struct AddLessonSheet: View {
                     Text("Lesson Date")
                 }
             }
+            Section("Lesson Session") {
+                Picker("Lesson Session", selection: $lessonSession) {
+                    Text("AM").tag("AM")
+                    Text("PM").tag("PM")
+                }.pickerStyle(.segmented)
+            }
             Button("Save Lesson") {
                 let lesson = Lesson(context:moc)
                 lesson.id = UUID()
                 lesson.name = name
                 lesson.date = date
                 lesson.lessonLabel = lessonLabel
+                lesson.session = lessonSession
                 do {
                     try moc.save()
+                    dismiss()
                 } catch {
                     print("An error occured whilst saving the new lesson.")
                 }
-                dismiss()
+                
             }
         }
         
