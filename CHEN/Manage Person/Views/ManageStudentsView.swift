@@ -10,7 +10,10 @@ import CoreData
 import AlertToast
 
 struct ManageStudentsView: View {
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.id, ascending: true)]) var students: FetchedResults<Student>
+    
+    @State private var bulkImportStudentPresented = false
+    
+    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     @State var showAddSheet: Bool = false
     var deletedStudent: Int = 0
     
@@ -41,7 +44,11 @@ struct ManageStudentsView: View {
                         NavigationLink {
                             StudentView(student: student)
                         } label: {
-                            Text(student.name ?? "Unknown Data")
+                            HStack {
+                                Text(student.indexNumber ?? "")
+                                    .monospaced()
+                                Text(student.name ?? "Unknown Data")
+                            }
                         }
                         
                         .swipeActions {
@@ -57,8 +64,6 @@ struct ManageStudentsView: View {
                                     }
                                     
                                 }
-                                
-                                
                             }
                             Button(role: .destructive) {
                                 print("delete button pressed")
@@ -70,11 +75,21 @@ struct ManageStudentsView: View {
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {
                             EditButton()
-                            Button {
-                                showAddSheet = true
+                            Menu {
+                                Button {
+                                    showAddSheet = true
+                                } label: {
+                                    Label("Manually", systemImage: "person")
+                                }
+                                Button {
+                                    bulkImportStudentPresented = true
+                                } label: {
+                                    Label("From Spreadsheet", systemImage: "tablecells")
+                                }
                             } label: {
                                 Image(systemName: "plus")
                             }
+
                         }
                     }
                     .sheet(isPresented: $showAddSheet) {
@@ -90,6 +105,8 @@ struct ManageStudentsView: View {
         .toast(isPresenting: $showChangeToast, alert: {
             alertToast
         })
-        
+        .sheet(isPresented: $bulkImportStudentPresented) {
+            BulkImportStudentView()
+        }
     }
 }

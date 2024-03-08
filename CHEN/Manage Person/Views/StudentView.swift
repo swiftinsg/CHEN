@@ -18,9 +18,53 @@ struct StudentView: View {
         return formatter
     }
     var body: some View {
-        VStack {
-            Text(student.name ?? "")
-            Button("Associate Card with User") {
+        Form {
+            Section("Name") {
+                Text(student.name ?? "")
+            }
+            
+            Section("Student Details") {
+                HStack {
+                    Text("UUID")
+                    Spacer()
+                    Text(student.id?.uuidString ?? "")
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.trailing)
+                        .monospaced()
+                }
+                
+                HStack {
+                    Text("Index Number")
+                    Spacer()
+                    Text(student.indexNumber ?? "")
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.trailing)
+                        .monospaced()
+                }
+                
+                HStack {
+                    Text("Batch Year")
+                    Spacer()
+                    Text(String(student.batch))
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.trailing)
+                        .monospaced()
+                }
+                
+                HStack {
+                    Text("Session")
+                    Spacer()
+                    Text(student.session ?? "No Value")
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.trailing)
+                }
+            }
+ 
+            Button {
                 if let personId = student.id, let name = student.name {
                     
                     let writeText = "\(personId)"
@@ -28,14 +72,12 @@ struct StudentView: View {
                     writer.msg = writeText
                     writer.write()
                     writer.endAlert = "Scanned card registered as \(name)."
-                    
                 }
+            } label: {
+                Label("Pair card", systemImage: "lanyardcard")
             }
-            .padding()
-            .buttonStyle(.borderedProminent)
-            Text("Attended Lessons")
-                .font(.title)
-            List {
+            
+            Section("Attended Lessons") {
                 ForEach(student.lessonsAttended?.allObjects as? [Attendance] ?? [], id: \.id) { attendanceRecord in
                     HStack {
                         Text("\(attendanceRecord.forLesson!.lessonLabel!): \(attendanceRecord.forLesson!.name!)")
@@ -61,14 +103,15 @@ struct StudentView: View {
             }
             
 
-        }.onAppear {
+        }
+        .onAppear {
             writer.completionHandler = { error in
                 if let unwrappedError = error {
                     print(unwrappedError.localizedDescription)
                 }
             }
         }
-        
+        .navigationTitle(student.name ?? "")
     }
     
     

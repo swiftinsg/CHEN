@@ -27,6 +27,7 @@
 		1AE456992AC92059009CEE12 /* LessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE456982AC92059009CEE12 /* LessonView.swift */; };
 		1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */; };
 		1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */; };
+		322BEA992B9AF12700A6B1EA /* BulkImportStudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BEA982B9AF12700A6B1EA /* BulkImportStudentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		1AE456982AC92059009CEE12 /* LessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonView.swift; sourceTree = "<group>"; };
 		1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStudentSheet.swift; sourceTree = "<group>"; };
 		1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLessonSheet.swift; sourceTree = "<group>"; };
+		322BEA982B9AF12700A6B1EA /* BulkImportStudentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkImportStudentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 				1A1A5B122A90D75800B6FDDD /* StudentView.swift */,
 				1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */,
 				1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */,
+				322BEA982B9AF12700A6B1EA /* BulkImportStudentView.swift */,
 				1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */,
 			);
 			path = Views;
@@ -301,6 +304,7 @@
 				1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */,
 				1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */,
 				1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */,
+				322BEA992B9AF12700A6B1EA /* BulkImportStudentView.swift in Sources */,
 				1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */,
 				1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */,
 				1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */,
