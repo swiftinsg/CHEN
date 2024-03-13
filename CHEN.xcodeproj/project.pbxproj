@@ -28,6 +28,7 @@
 		1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */; };
 		1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */; };
 		322BEA992B9AF12700A6B1EA /* BulkImportStudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BEA982B9AF12700A6B1EA /* BulkImportStudentView.swift */; };
+		32BABE462BA1EC0E0039373A /* SwiftUINFC in Frameworks */ = {isa = PBXBuildFile; productRef = 32BABE452BA1EC0E0039373A /* SwiftUINFC */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32BABE462BA1EC0E0039373A /* SwiftUINFC in Frameworks */,
 				1AE456972AA5C609009CEE12 /* SwiftNFC in Frameworks */,
 				1A0BB4072AFE3AFA00A19359 /* AlertToast in Frameworks */,
 			);
@@ -233,6 +235,7 @@
 			packageProductDependencies = (
 				1AE456962AA5C609009CEE12 /* SwiftNFC */,
 				1A0BB4062AFE3AFA00A19359 /* AlertToast */,
+				32BABE452BA1EC0E0039373A /* SwiftUINFC */,
 			);
 			productName = CHEN;
 			productReference = 1A0C263B2A90BC5E002FE50E /* CHEN.app */;
@@ -265,6 +268,7 @@
 			packageReferences = (
 				1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */,
 				1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */,
+				32BABE442BA1EC0E0039373A /* XCRemoteSwiftPackageReference "SwiftUINFC" */,
 			);
 			productRefGroup = 1A0C263C2A90BC5E002FE50E /* Products */;
 			projectDirPath = "";
@@ -543,6 +547,14 @@
 				kind = branch;
 			};
 		};
+		32BABE442BA1EC0E0039373A /* XCRemoteSwiftPackageReference "SwiftUINFC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftinsg/SwiftUINFC/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -555,6 +567,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */;
 			productName = SwiftNFC;
+		};
+		32BABE452BA1EC0E0039373A /* SwiftUINFC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 32BABE442BA1EC0E0039373A /* XCRemoteSwiftPackageReference "SwiftUINFC" */;
+			productName = SwiftUINFC;
 		};
 /* End XCSwiftPackageProductDependency section */
 
