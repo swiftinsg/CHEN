@@ -33,13 +33,41 @@ struct LessonView: View {
         }
     }
     var body: some View {
-        VStack {
-            Text("Lesson \(lesson.lessonLabel ?? "Unknown ID"): \(lesson.name ?? "Unknown Lesson")")
-            Text(lesson.session ?? "Unknown Session")
-            List {
+        List {
+            Section("Session Information") {
+                HStack {
+                    Text("Name")
+                    Spacer()
+                    Text(lesson.name ?? "Unknown")
+                        .textSelection(.enabled)
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("Lesson")
+                    Spacer()
+                    Text(lesson.lessonLabel ?? "Unknown")
+                        .textSelection(.enabled)
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("Session")
+                    Spacer()
+                    Text(lesson.session ?? "Unknown")
+                        .textSelection(.enabled)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            
+            Section("Attendances") {
                 if filteredAttendances.count != 0 {
-                    ForEach(filteredAttendances, id: \.id) { attendanceRecord in
+                    ForEach(filteredAttendances.sorted(by: {
+                        ($0.person?.indexNumber ?? "") < ($1.person?.indexNumber ?? "")
+                    }), id: \.id) { attendanceRecord in
                         HStack {
+                            Text(attendanceRecord.person!.indexNumber ?? "")
+                                .monospaced()
                             Text(attendanceRecord.person!.name!)
                             Spacer()
                             Text(dateFormatter.string(from: attendanceRecord.recordedAt!))
@@ -69,12 +97,11 @@ struct LessonView: View {
                         ContentUnavailableView("No Results Found", systemImage: "pc", description: Text("No results were found for this search query :("))
                             .symbolRenderingMode(.multicolor)
                     }
-                    
                 }
-            
             }
-            .searchable(text: $searchTerm)
+            
         }
+        .searchable(text: $searchTerm)
         
     }
     
