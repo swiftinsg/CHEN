@@ -46,7 +46,7 @@ struct ScanView: View {
                         }
                     }
                     NavigationLink {
-                        ManualAttendanceView(lesson: lesson, alertToast: $alertToast, showAlertToast: $showChangeToast)
+                        ManualAttendanceView(lesson: lesson)
                     } label: {
                         Text("Manually mark a student as present")
                     }

@@ -28,6 +28,9 @@
 		1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */; };
 		1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */; };
 		322BEA992B9AF12700A6B1EA /* BulkImportStudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BEA982B9AF12700A6B1EA /* BulkImportStudentView.swift */; };
+		32A2A5B42BAAC15400C935FD /* StudentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A2A5B32BAAC15400C935FD /* StudentRowView.swift */; };
+		32A2A5B62BAAC3C000C935FD /* LessonRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A2A5B52BAAC3C000C935FD /* LessonRowView.swift */; };
+		32A2A5B82BAAC57B00C935FD /* SessionInformationEditableField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A2A5B72BAAC57B00C935FD /* SessionInformationEditableField.swift */; };
 		32BABE462BA1EC0E0039373A /* SwiftUINFC in Frameworks */ = {isa = PBXBuildFile; productRef = 32BABE452BA1EC0E0039373A /* SwiftUINFC */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +56,9 @@
 		1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStudentSheet.swift; sourceTree = "<group>"; };
 		1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLessonSheet.swift; sourceTree = "<group>"; };
 		322BEA982B9AF12700A6B1EA /* BulkImportStudentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkImportStudentView.swift; sourceTree = "<group>"; };
+		32A2A5B32BAAC15400C935FD /* StudentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentRowView.swift; sourceTree = "<group>"; };
+		32A2A5B52BAAC3C000C935FD /* LessonRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonRowView.swift; sourceTree = "<group>"; };
+		32A2A5B72BAAC57B00C935FD /* SessionInformationEditableField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInformationEditableField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,7 +191,11 @@
 			children = (
 				1AE456872AA56BE3009CEE12 /* ManageLessonsView.swift */,
 				1AE456982AC92059009CEE12 /* LessonView.swift */,
+				32A2A5B72BAAC57B00C935FD /* SessionInformationEditableField.swift */,
+				32A2A5B32BAAC15400C935FD /* StudentRowView.swift */,
+				32A2A5B52BAAC3C000C935FD /* LessonRowView.swift */,
 				1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */,
+				1A0C28452B6DD4B800F3BFDF /* ManualAttendanceView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -195,7 +205,6 @@
 			children = (
 				1A0C26552A90C4AE002FE50E /* ScanView.swift */,
 				1A25B7072AE3E17C00A2B636 /* SelectLessonView.swift */,
-				1A0C28452B6DD4B800F3BFDF /* ManualAttendanceView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -303,16 +312,19 @@
 				1AE456992AC92059009CEE12 /* LessonView.swift in Sources */,
 				1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */,
 				1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */,
+				32A2A5B42BAAC15400C935FD /* StudentRowView.swift in Sources */,
 				1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */,
 				1A0C284C2B90695C00F3BFDF /* BackupPersistentStore.swift in Sources */,
 				1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */,
 				1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */,
+				32A2A5B82BAAC57B00C935FD /* SessionInformationEditableField.swift in Sources */,
 				1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */,
 				322BEA992B9AF12700A6B1EA /* BulkImportStudentView.swift in Sources */,
 				1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */,
 				1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */,
 				1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */,
 				1A0C28462B6DD4B800F3BFDF /* ManualAttendanceView.swift in Sources */,
+				32A2A5B62BAAC3C000C935FD /* LessonRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

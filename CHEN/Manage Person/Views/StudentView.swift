@@ -78,19 +78,16 @@ struct StudentView: View {
             }
             
             Section("Attended Lessons") {
-                ForEach(student.lessonsAttended?.allObjects as? [Attendance] ?? [], id: \.id) { attendanceRecord in
-                    HStack {
-                        Text("\(attendanceRecord.forLesson!.lessonLabel!): \(attendanceRecord.forLesson!.name!)")
-                        Spacer()
-                        Text(dateFormatter.string(from: attendanceRecord.recordedAt!))
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                    }
+                let attendedLessons = (student.lessonsAttended?.allObjects as? [Attendance] ?? []).sorted(by: {
+                    ($0.recordedAt ?? .distantPast) < ($1.recordedAt ?? .distantPast)
+                })
+                
+                ForEach(attendedLessons, id: \.id) { attendanceRecord in
+                    LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt!)
                 }
                 .onDelete(perform: { indexSet in
-                    let attendances = student.lessonsAttended?.allObjects as? [Attendance] ?? []
                     for index in indexSet {
-                        let attendance = attendances[index]
+                        let attendance = attendedLessons[index]
                         moc.delete(attendance)
                     }
                     do {

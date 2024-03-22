@@ -17,12 +17,15 @@ struct ManualAttendanceView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var moc
     
-    @Binding var alertToast: AlertToast
-    @Binding var showAlertToast: Bool
+//    @Binding var alertToast: AlertToast
+//    @Binding var showAlertToast: Bool
     var searchedStudents: [Student] {
         let studentsArray = students.compactMap { student in
             student
+        }.sorted {
+            ($0.indexNumber ?? "") < ($1.indexNumber ?? "")
         }
+        
         switch search {
         case "":
             return studentsArray
@@ -46,13 +49,20 @@ struct ManualAttendanceView: View {
                         selectedStudent = student
                         showAlert = true
                     } label: {
-                        Text(student.name ?? "Unknown Data")
+                        HStack {
+                            Text(student.indexNumber ?? "")
+                                .monospaced()
+                            Text(student.name!)
+                            Spacer()
+                        }
                     }
                 }
                 .searchable(text: $search)
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Attendance"), message: Text("Mark student as attending?"), primaryButton: .default(Text("Yes"), action: {
+                Alert(title: Text("Attendance"),
+                      message: Text("Mark \(selectedStudent?.name ?? "student") as attending?"),
+                      primaryButton: .default(Text("Yes"), action: {
                     let attendance = Attendance(context: moc)
                     attendance.attendanceType = 1
                     attendance.forLesson = lesson
@@ -61,12 +71,14 @@ struct ManualAttendanceView: View {
                     
                     do {
                         try moc.save()
-                        showAlertToast = true
-                        alertToast = AlertToast(displayMode: .banner(.slide), type: .complete(.green), title: "Success", subTitle: "Attendance marked", style: .style( subTitleFont: .callout))
+//                        showAlertToast = true
+//                        alertToast = AlertToast(displayMode: .banner(.slide), type: .complete(.green), title: "Success", subTitle: "Attendance marked", style: .style( subTitleFont: .callout))
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
                     } catch {
                         print(error.localizedDescription)
-                        showAlertToast = true
-                        alertToast = AlertToast(displayMode: .banner(.slide), type: .error(.red), title: "An error occured", subTitle: error.localizedDescription)
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+//                        showAlertToast = true
+//                        alertToast = AlertToast(displayMode: .banner(.slide), type: .error(.red), title: "An error occured", subTitle: error.localizedDescription)
                         
                     }
                     
