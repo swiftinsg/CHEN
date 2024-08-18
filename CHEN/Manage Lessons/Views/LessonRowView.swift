@@ -16,10 +16,10 @@ struct LessonRowView: View {
     var body: some View {
         NavigationLink {
             LessonView(lesson: lesson)
-                .navigationTitle(lesson.name!)
+                .navigationTitle(lesson.name ?? "Unknown Lesson")
         } label: {
             HStack {
-                Text(lesson.lessonLabel ?? "")
+                Text(lesson.lessonLabel ?? "??")
                     .monospaced()
                     .padding(.trailing)
                 switch lesson.session {
