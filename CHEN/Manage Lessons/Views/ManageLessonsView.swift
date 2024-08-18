@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ManageLessonsView: View {
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.date, ascending: false)]) var lessons: FetchedResults<Lesson>
+    @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.session, ascending: true)]) var lessons: FetchedResults<Lesson>
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var moc
 
@@ -84,6 +84,9 @@ struct ManageLessonsView: View {
                 }
             }
             .navigationTitle(Text("Lessons"))
+        }
+        .onAppear {
+            print(lessons)
         }
         
     }

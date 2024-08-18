@@ -34,6 +34,7 @@ struct AddLessonSheet: View {
                 Picker("Lesson Session", selection: $lessonSession) {
                     Text("AM").tag("AM")
                     Text("PM").tag("PM")
+                    Text("Full-day").tag("fd")
                 }.pickerStyle(.segmented)
             }
             Button("Save Lesson") {
