@@ -18,6 +18,7 @@ struct LessonView: View {
     @State var searchTerm: String = ""
     @State var absenteeFilter: String = "Morning"
     
+    
     @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     
     var filteredAttendances: [Attendance] {
@@ -174,7 +175,7 @@ struct LessonView: View {
                             Text("Afternoon")
                                 .tag("Afternoon")
                             Text("All")
-                                .tag("all")
+                                .tag("All")
                         }
                         .textCase(.lowercase)
                     }
@@ -183,6 +184,22 @@ struct LessonView: View {
             
         }
         .searchable(text: $searchTerm)
+        .onAppear {
+            switch lesson.session ?? "AM" {
+            case "AM":
+                absenteeFilter = "Morning"
+                break
+            case "PM":
+                absenteeFilter = "Afternoon"
+                break
+            case "All-day":
+                absenteeFilter = "All"
+                break
+            default:
+                break
+            }
+            
+        }
     }
     
 }
