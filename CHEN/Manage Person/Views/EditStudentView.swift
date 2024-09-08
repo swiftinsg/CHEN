@@ -55,6 +55,7 @@ struct EditStudentView: View {
                     alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
                     
                 }
+            
             }
             .disabled(student.indexNumber! == "" || student.name == "")
         }

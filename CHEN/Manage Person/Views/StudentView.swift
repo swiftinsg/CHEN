@@ -35,13 +35,7 @@ struct StudentView: View {
                 }
                 
                 HStack {
-                    Text("Index Number")
-                    Spacer()
-                    Text(student.indexNumber ?? "")
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                        .multilineTextAlignment(.trailing)
-                        .monospaced()
+                    SessionInformationEditableField(title: "Index Number", placeholder: "Index Number", value: $student.indexNumber)
                 }
                 
                 HStack {
@@ -57,7 +51,16 @@ struct StudentView: View {
                 HStack {
                     Text("Session")
                     Spacer()
-                    Text(student.session ?? "No Value")
+                    Text(student.session ?? "No Session")
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.trailing)
+                }
+                
+                HStack {
+                    Text("Streak")
+                    Spacer()
+                    Text(String(student.streak) ?? "No Streak")
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                         .multilineTextAlignment(.trailing)

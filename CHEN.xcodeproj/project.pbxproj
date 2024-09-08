@@ -22,6 +22,7 @@
 		1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B162A90DD8500B6FDDD /* CHEN.xcdatamodeld */; };
 		1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1A5B1F2A90E14A00B6FDDD /* DataController.swift */; };
 		1A25B7082AE3E17C00A2B636 /* SelectLessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A25B7072AE3E17C00A2B636 /* SelectLessonView.swift */; };
+		1A2699662C83179B00DBDA6C /* CalculateStreakForStudent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2699652C83179B00DBDA6C /* CalculateStreakForStudent.swift */; };
 		1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE456872AA56BE3009CEE12 /* ManageLessonsView.swift */; };
 		1AE456972AA5C609009CEE12 /* SwiftNFC in Frameworks */ = {isa = PBXBuildFile; productRef = 1AE456962AA5C609009CEE12 /* SwiftNFC */; };
 		1AE456992AC92059009CEE12 /* LessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE456982AC92059009CEE12 /* LessonView.swift */; };
@@ -51,6 +52,7 @@
 		1A1A5B172A90DD8500B6FDDD /* CHEN.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CHEN.xcdatamodel; sourceTree = "<group>"; };
 		1A1A5B1F2A90E14A00B6FDDD /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		1A25B7072AE3E17C00A2B636 /* SelectLessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLessonView.swift; sourceTree = "<group>"; };
+		1A2699652C83179B00DBDA6C /* CalculateStreakForStudent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateStreakForStudent.swift; sourceTree = "<group>"; };
 		1AE456872AA56BE3009CEE12 /* ManageLessonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageLessonsView.swift; sourceTree = "<group>"; };
 		1AE456982AC92059009CEE12 /* LessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonView.swift; sourceTree = "<group>"; };
 		1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStudentSheet.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				1A0C284B2B90695C00F3BFDF /* BackupPersistentStore.swift */,
+				1A2699652C83179B00DBDA6C /* CalculateStreakForStudent.swift */,
 			);
 			path = "Database Helpers";
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				1A0C284A2B90669300F3BFDF /* SettingsView.swift in Sources */,
 				1A1A5B132A90D75800B6FDDD /* StudentView.swift in Sources */,
 				1A25B7082AE3E17C00A2B636 /* SelectLessonView.swift in Sources */,
+				1A2699662C83179B00DBDA6C /* CalculateStreakForStudent.swift in Sources */,
 				1A1A5B112A90D06A00B6FDDD /* ManageStudentsView.swift in Sources */,
 				1AE456992AC92059009CEE12 /* LessonView.swift in Sources */,
 				1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */,
@@ -472,7 +476,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.swiftinsg.CHEN;
+				PRODUCT_BUNDLE_IDENTIFIER = org.swiftinsg.CHEN.test.test.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -508,7 +512,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.swiftinsg.CHEN;
+				PRODUCT_BUNDLE_IDENTIFIER = org.swiftinsg.CHEN.test.test.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

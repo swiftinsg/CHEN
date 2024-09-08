@@ -30,13 +30,16 @@ struct AddLessonSheet: View {
                     Text("Lesson Date")
                 }
             }
+            
             Section("Lesson Session") {
                 Picker("Lesson Session", selection: $lessonSession) {
                     Text("AM").tag("AM")
                     Text("PM").tag("PM")
                     Text("Full-day").tag("fd")
-                }.pickerStyle(.segmented)
+                }
+                .pickerStyle(.segmented)
             }
+            
             Button("Save Lesson") {
                 let lesson = Lesson(context:moc)
                 lesson.id = UUID()
@@ -52,6 +55,7 @@ struct AddLessonSheet: View {
                 }
                 
             }
+            .disabled(name == "" || lessonLabel == "")
         }
         
     }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AlertToast
+import CoreData
 
 struct ManualAttendanceView: View {
     var lesson: Lesson
@@ -17,8 +18,8 @@ struct ManualAttendanceView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var moc
     
-//    @Binding var alertToast: AlertToast
-//    @Binding var showAlertToast: Bool
+    //    @Binding var alertToast: AlertToast
+    //    @Binding var showAlertToast: Bool
     var searchedStudents: [Student] {
         let studentsArray = students.compactMap { student in
             student
@@ -69,16 +70,51 @@ struct ManualAttendanceView: View {
                     attendance.person = selectedStudent!
                     attendance.recordedAt = Date()
                     
+                    
                     do {
+                        let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
+                        
+                        lessonFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Lesson.date, ascending: false)]
+                        
+                        let lessons = try moc.fetch(lessonFetchRequest)
+                        var streak = 0
+                        print("Lessons is \(lessons)")
+                        
+                        // Get all lessons (newest to first), filter for IF student session equals session
+                        // OR if the lesson is a full day session
+                        
+                        let filteredLessons = lessons.filter({ selectedStudent!.session ?? "nothing" == $0.session ?? "nothing" || $0.session ?? "nothing" == "fd"})
+                        print("FilteredLessons is \(filteredLessons)")
+                        // Go through each lesson, find if student attended, if they did +1 streak
+                        for lesson in filteredLessons {
+                            if let att = lesson.attendances {
+                                let attendances = att.array as! [Attendance]
+                                print("att is \(attendances)")
+                                guard attendances.count != 0 else { break }
+                                let search = attendances.filter({ $0.person!.id == selectedStudent!.id })
+                                print("search is \(search)")
+                                if search.count > 0 {
+                                    // Student attended lesson
+                                    // Add one to streak
+                                    streak += 1
+                                } else {
+                                    // Streak ends here break out of loop
+                                    streak += 1
+                                    break
+                                }
+                            }
+                        }
+                        
+                        selectedStudent!.streak = Int16(streak)
                         try moc.save()
-//                        showAlertToast = true
-//                        alertToast = AlertToast(displayMode: .banner(.slide), type: .complete(.green), title: "Success", subTitle: "Attendance marked", style: .style( subTitleFont: .callout))
+                        //                        showAlertToast = true
+                        //                        alertToast = AlertToast(displayMode: .banner(.slide), type: .complete(.green), title: "Success", subTitle: "Attendance marked", style: .style( subTitleFont: .callout))
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     } catch {
                         print(error.localizedDescription)
                         UINotificationFeedbackGenerator().notificationOccurred(.error)
-//                        showAlertToast = true
-//                        alertToast = AlertToast(displayMode: .banner(.slide), type: .error(.red), title: "An error occured", subTitle: error.localizedDescription)
+                        //                        showAlertToast = true
+                        //                        alertToast = AlertToast(displayMode: .banner(.slide), type: .error(.red), title: "An error occured", subTitle: error.localizedDescription)
                         
                     }
                     

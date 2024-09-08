@@ -12,7 +12,7 @@
         <attribute name="lessonLabel" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="session" attributeType="String"/>
-        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Attendance" inverseName="forLesson" inverseEntity="Attendance"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attendance" inverseName="forLesson" inverseEntity="Attendance"/>
     </entity>
     <entity name="Student" representedClassName="Student" syncable="YES" codeGenerationType="class">
         <attribute name="batch" attributeType="Integer 16" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
@@ -21,6 +21,7 @@
         <attribute name="indexNumber" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="session" optional="YES" attributeType="String"/>
+        <attribute name="streak" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="lessonsAttended" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="person" inverseEntity="Attendance"/>
     </entity>
 </model>

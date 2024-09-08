@@ -12,9 +12,13 @@ import AlertToast
 struct ManageStudentsView: View {
     
     @State private var bulkImportStudentPresented = false
+    @Environment(\.managedObjectContext) private var moc
     
     @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     @State var showAddSheet: Bool = false
+    
+    @State var showWarningAlert: Bool = false
+    @State var studentToDelete: Student?
     var deletedStudent: Int = 0
     
     var searchedStudents: [Student] {
@@ -40,37 +44,60 @@ struct ManageStudentsView: View {
             ZStack {
                 VStack {
                     // Implement searches properly (see LessonView)
-                    List(searchedStudents) { student in
-                        NavigationLink {
-                            StudentView(student: student)
-                        } label: {
-                            HStack {
-                                Text(student.indexNumber ?? "")
-                                    .monospaced()
-                                Text(student.name ?? "Unknown Data")
-                            }
-                        }
-                        
-                        .swipeActions {
-                            NavigationStack {
-                                NavigationLink {
-                                    EditStudentView(student: student, alertToast: $alertToast, showChangeToast: $showChangeToast)
-                                        .navigationTitle("Edit Student")
-                                } label: {
-                                    Button {
-                                        
-                                    } label: {
-                                        Text("Edit")
-                                    }
-                                    
+                    List {
+                        ForEach(searchedStudents) { student in
+                            NavigationLink {
+                                StudentView(student: student)
+                            } label: {
+                                HStack {
+                                    Text(student.indexNumber ?? "")
+                                        .monospaced()
+                                    Text(student.name ?? "Unknown Data")
                                 }
                             }
-                            Button(role: .destructive) {
-                                print("delete button pressed")
-                            } label: {
-                                Text("Delete")
+                            
+//                            .swipeActions {
+//                                NavigationStack {
+//                                    NavigationLink {
+//                                        EditStudentView(student: student, alertToast: $alertToast, showChangeToast: $showChangeToast)
+//                                            .navigationTitle("Edit Student")
+//                                    } label: {
+//                                        Button {
+//                                            
+//                                        } label: {
+//                                            Text("Edit")
+//                                        }
+//                                        
+//                                    }
+//                                }
+//                            }
+                        }
+                        .onDelete(perform: { indexSet in
+                            for index in indexSet {
+                                let students = students[index]
+                                
+                                studentToDelete = students
+                            }
+                            showWarningAlert = true
+                        })
+                       
+                        
+                    }
+                    .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")",
+                           isPresented: $showWarningAlert) {
+                        Button("Delete", role: .destructive) {
+                            guard let studentToDelete else { return }
+                            
+                            moc.delete(studentToDelete)
+                            
+                            do {
+                                try moc.save()
+                            } catch {
+                                print(error.localizedDescription)
                             }
                         }
+                    } message: {
+                        Text("This is irreversible.")
                     }
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -99,6 +126,7 @@ struct ManageStudentsView: View {
                         }
                     }
                     .searchable(text: $search)
+                    
                 }
             }.navigationTitle(Text("Students"))
         }

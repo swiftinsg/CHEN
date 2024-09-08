@@ -15,6 +15,7 @@ struct AddStudentSheet: View {
     @ObservedObject var writer = NFCWriter()
     @State var name: String = ""
     @State var indexNumber: String = ""
+    @State var session: String = "AM"
     
     // Default to the current year
     @State var batch: Int = Calendar.current.dateComponents([.year], from: Date()).year!
@@ -23,11 +24,18 @@ struct AddStudentSheet: View {
     
     @Binding var showChangeToast: Bool
     @Binding var alertToast: AlertToast
+    
     var body: some View {
         Form {
             Section(header: Text("Student Information")) {
                 TextField("Tan Rui Yang", text: $name)
                 TextField("Student Index Number", text: $indexNumber)
+                HStack {
+                    Picker("Student Session", selection: $session) {
+                        Text("AM").tag("AM")
+                        Text("PM").tag("PM")
+                    }.pickerStyle(.segmented)
+                }
                 Picker("Student Batch", selection: $batch) {
                     ForEach(2018...2050, id: \.self) {
                         Text(String($0))
@@ -43,6 +51,7 @@ struct AddStudentSheet: View {
                 student.name = name
                 student.indexNumber = indexNumber
                 student.batch = Int16(batch)
+                student.session = session
                 
                 // Todo: make this work
                 writer.startAlert = "Please scan the card to be associated with this student."

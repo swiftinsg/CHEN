@@ -73,11 +73,36 @@ struct ScanView: View {
                     format: "%K == %@", "id", studentUUID as CVarArg
                 )
                 
+                let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
+                
+                lessonFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Lesson.date, ascending: false)]
                 do {
                     let students = try moc.fetch(fetchRequest)
-                    
                     guard let foundStudent = students.first else {
                         return "Student not found"
+                    }
+                    let lessons = try moc.fetch(lessonFetchRequest)
+                    
+                    var streak = 0
+                    
+                    // Get all lessons (newest to first), filter for IF student session equals session
+                    // OR if the lesson is a full day session
+                    let filteredLessons = lessons.filter({ foundStudent.session ?? "nothing" == $0.session ?? "nothing" || $0.session ?? "nothing" == "fd"})
+                    
+                    // Go through each lesson, find if student attended, if they did +1 streak
+                    for lesson in filteredLessons {
+                        if let att = lesson.attendances {
+                            let attendances = att.array as! [Attendance]
+                            let search = attendances.filter({ $0.person!.id == foundStudent.id })
+                            if search.count > 0 {
+                                // Student attended lesson
+                                // Add one to streak
+                                streak += 1
+                            } else {
+                                // Streak ends here break out of loop
+                                break
+                            }
+                        }
                     }
                     
                     if let name = foundStudent.name {
@@ -90,6 +115,9 @@ struct ScanView: View {
                         attendance.recordedAt = Date.now
                         
                         attendance.person = foundStudent
+                        
+                        // update streak
+                        foundStudent.streak = Int16(streak)
                         
                         try moc.save()
                         
