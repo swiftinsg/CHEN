@@ -70,42 +70,59 @@ struct ManualAttendanceView: View {
                     attendance.person = selectedStudent!
                     attendance.recordedAt = Date()
                     
+                    let studentUUID = selectedStudent!.id!
                     
-                    do {
+                    // Calc streak
+                    // Get last available attendance for user
+                    let attFetchRequest: NSFetchRequest<Attendance> = Attendance.fetchRequest()
+                    attFetchRequest.predicate = NSPredicate(format: "%K == %@", "id", studentUUID as CVarArg)
+                    attFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Attendance.recordedAt, ascending: false)]
+                    
+                    let studentAttendances = selectedStudent!.lessonsAttended!.allObjects as! [Attendance]
+                    
+                    // Get latest lesson
+                    // NOTE: A lot of this shit implies that the student being checked is the same session as the lesson
+                    // A) get it done for all day as well and B) fix all that shit and check properly later
+                    if let latestAtt = studentAttendances.first, let latestLesson = latestAtt.forLesson {
                         let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
+                        lessonFetchRequest.predicate = NSPredicate(format: "%K == %@", "session", selectedStudent!.session!)
+                        lessonFetchRequest.sortDescriptors = [.init(keyPath: \Lesson.date, ascending: false)]
                         
-                        lessonFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Lesson.date, ascending: false)]
-                        
-                        let lessons = try moc.fetch(lessonFetchRequest)
-                        var streak = 0
-                        print("Lessons is \(lessons)")
-                        
-                        // Get all lessons (newest to first), filter for IF student session equals session
-                        // OR if the lesson is a full day session
-                        
-                        let filteredLessons = lessons.filter({ selectedStudent!.session ?? "nothing" == $0.session ?? "nothing" || $0.session ?? "nothing" == "fd"})
-                        print("FilteredLessons is \(filteredLessons)")
-                        // Go through each lesson, find if student attended, if they did +1 streak
-                        for lesson in filteredLessons {
-                            if let att = lesson.attendances {
-                                let attendances = att.array as! [Attendance]
-                                print("att is \(attendances)")
-                                guard attendances.count != 0 else { break }
-                                let search = attendances.filter({ $0.person!.id == selectedStudent!.id })
-                                print("search is \(search)")
-                                if search.count > 0 {
-                                    // Student attended lesson
-                                    // Add one to streak
-                                    streak += 1
+                        do {
+                            let lessons = try moc.fetch(lessonFetchRequest)
+                            if lessons.count > 1 {
+                                let lessonIndex = lessons.firstIndex(of: lesson)!
+                                print("lessonIndex is \(lessonIndex)")
+                                if lessonIndex != lessons.count - 1 {
+                                    let previousChronologicalLesson = lessons[lessonIndex + 1]
+                                    if previousChronologicalLesson == latestLesson {
+                                        attendance.streak = latestAtt.streak + 1
+                                        print("added streak")
+                                    } else {
+                                        print("streak broke, set streak to 1")
+                                        attendance.streak = 1
+                                    }
                                 } else {
-                                    // Streak ends here break out of loop
-                                    streak += 1
-                                    break
+                                    attendance.streak = 1
+                                    print("first CHRONOLOGICAL lesson, streak = 1 no matter what")
                                 }
+                            } else {
+                                attendance.streak = 1
+                                print("no lesson found set streak to 1")
                             }
+                        } catch {
+                            print(error.localizedDescription)
+                            UINotificationFeedbackGenerator().notificationOccurred(.error)
                         }
+                           
+                    } else {
+                        attendance.streak = 1
+                    }
+                    print(attendance.streak)
+                    do {
                         
-                        selectedStudent!.streak = Int16(streak)
+                        
+                        
                         try moc.save()
                         //                        showAlertToast = true
                         //                        alertToast = AlertToast(displayMode: .banner(.slide), type: .complete(.green), title: "Success", subTitle: "Attendance marked", style: .style( subTitleFont: .callout))

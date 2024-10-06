@@ -60,7 +60,7 @@ struct StudentView: View {
                 HStack {
                     Text("Streak")
                     Spacer()
-                    Text(String(student.streak) ?? "No Streak")
+                    Text(getStreak(student))
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                         .multilineTextAlignment(.trailing)
@@ -112,6 +112,21 @@ struct StudentView: View {
             }
         }
         .navigationTitle(student.name ?? "")
+    }
+    
+    func getStreak(_ student: Student) -> String {
+        var attendances = student.lessonsAttended!.allObjects as! [Attendance]
+        // sort attendances by date as they're not ordered
+        attendances.sort { att1, att2 in
+            att1.recordedAt! > att2.recordedAt!
+        }
+        if attendances.count > 0 {
+            return String(attendances.first!.streak)
+        } else {
+            return "0"
+        }
+        
+        
     }
     
     
