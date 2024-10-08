@@ -10,7 +10,6 @@ import SwiftNFC
 import CoreData
 import SwiftUINFC
 import CoreNFC
-import AlertToast
 
 struct ScanView: View {
     @ObservedObject var reader = NFCReader()
@@ -20,9 +19,6 @@ struct ScanView: View {
     
     @State var studentName: String = "Scan in a student!"
     @State var lesson: Lesson
-    
-    @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "")
-    @State var showChangeToast: Bool = false
     
     @State private var isReaderPresented = false
     
@@ -126,14 +122,12 @@ struct ScanView: View {
                         return "Student name not identified"
                     }
                 } catch {
-                    return "There was an error fetching the student: \(error)"
+                    print(error.localizedDescription)
+                    return "There was an error scanning the student: \(error.localizedDescription)"
                 }
             }
         }
         .navigationTitle(lesson.session ?? "")
-        .toast(isPresenting: $showChangeToast, duration: 1.0) {
-            alertToast
-        }
     }
 }
 
