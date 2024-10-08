@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */; };
-		1A0BB4072AFE3AFA00A19359 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0BB4062AFE3AFA00A19359 /* AlertToast */; };
 		1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C263E2A90BC5E002FE50E /* CHENApp.swift */; };
 		1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26402A90BC5E002FE50E /* HomeView.swift */; };
 		1A0C26432A90BC60002FE50E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C26422A90BC60002FE50E /* Assets.xcassets */; };
@@ -68,7 +67,6 @@
 			files = (
 				32BABE462BA1EC0E0039373A /* SwiftUINFC in Frameworks */,
 				1AE456972AA5C609009CEE12 /* SwiftNFC in Frameworks */,
-				1A0BB4072AFE3AFA00A19359 /* AlertToast in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,7 +193,6 @@
 				32A2A5B32BAAC15400C935FD /* StudentRowView.swift */,
 				32A2A5B52BAAC3C000C935FD /* LessonRowView.swift */,
 				1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */,
-				1A0C28452B6DD4B800F3BFDF /* ManualAttendanceView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -205,6 +202,7 @@
 			children = (
 				1A0C26552A90C4AE002FE50E /* ScanView.swift */,
 				1A25B7072AE3E17C00A2B636 /* SelectLessonView.swift */,
+				1A0C28452B6DD4B800F3BFDF /* ManualAttendanceView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -243,7 +241,6 @@
 			name = CHEN;
 			packageProductDependencies = (
 				1AE456962AA5C609009CEE12 /* SwiftNFC */,
-				1A0BB4062AFE3AFA00A19359 /* AlertToast */,
 				32BABE452BA1EC0E0039373A /* SwiftUINFC */,
 			);
 			productName = CHEN;
@@ -276,7 +273,6 @@
 			mainGroup = 1A0C26322A90BC5E002FE50E;
 			packageReferences = (
 				1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */,
-				1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */,
 				32BABE442BA1EC0E0039373A /* XCRemoteSwiftPackageReference "SwiftUINFC" */,
 			);
 			productRefGroup = 1A0C263C2A90BC5E002FE50E /* Products */;
@@ -543,14 +539,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/elai950/AlertToast";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/serotonincrash/SwiftNFC";
@@ -570,11 +558,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1A0BB4062AFE3AFA00A19359 /* AlertToast */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A0BB4052AFE3AFA00A19359 /* XCRemoteSwiftPackageReference "AlertToast" */;
-			productName = AlertToast;
-		};
 		1AE456962AA5C609009CEE12 /* SwiftNFC */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1AE456952AA5C609009CEE12 /* XCRemoteSwiftPackageReference "SwiftNFC" */;

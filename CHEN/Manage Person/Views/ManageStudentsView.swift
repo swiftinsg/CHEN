@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreData
-import AlertToast
 
 struct ManageStudentsView: View {
     
@@ -98,7 +97,7 @@ struct ManageStudentsView: View {
                     }
                     .sheet(isPresented: $showAddSheet) {
                         NavigationStack {
-                            AddStudentSheet(showChangeToast: $showChangeToast, alertToast: $alertToast)
+                            AddStudentSheet()
                                 .navigationTitle("Create Student")
                         }
                     }

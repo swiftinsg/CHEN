@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AlertToast
 import CoreData
 
 struct ManualAttendanceView: View {

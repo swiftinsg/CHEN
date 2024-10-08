@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftNFC
-import AlertToast
 
 struct EditStudentView: View {
     @Environment(\.dismiss) private var dismiss
