@@ -37,40 +37,15 @@ struct ManageStudentsView: View {
     
     @State var showDeleteAlert: Bool = false
     @State var search: String = ""
-    @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "")
-    @State var showChangeToast: Bool = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
-                    // Implement searches properly (see LessonView)
+
                     List {
                         ForEach(searchedStudents) { student in
-                            NavigationLink {
-                                StudentView(student: student)
-                            } label: {
-                                HStack {
-                                    Text(student.indexNumber ?? "")
-                                        .monospaced()
-                                    Text(student.name ?? "Unknown Data")
-                                }
-                            }
-                            
-//                            .swipeActions {
-//                                NavigationStack {
-//                                    NavigationLink {
-//                                        EditStudentView(student: student, alertToast: $alertToast, showChangeToast: $showChangeToast)
-//                                            .navigationTitle("Edit Student")
-//                                    } label: {
-//                                        Button {
-//                                            
-//                                        } label: {
-//                                            Text("Edit")
-//                                        }
-//                                        
-//                                    }
-//                                }
-//                            }
+                            StudentRowView(student: student)
                         }
                         .onDelete(perform: { indexSet in
                             for index in indexSet {
@@ -92,6 +67,7 @@ struct ManageStudentsView: View {
                             
                             do {
                                 try moc.save()
+                                UINotificationFeedbackGenerator().notificationOccurred(.success)
                             } catch {
                                 print(error.localizedDescription)
                             }
@@ -130,9 +106,6 @@ struct ManageStudentsView: View {
                 }
             }.navigationTitle(Text("Students"))
         }
-        .toast(isPresenting: $showChangeToast, alert: {
-            alertToast
-        })
         .sheet(isPresented: $bulkImportStudentPresented) {
             BulkImportStudentView()
         }
