@@ -30,7 +30,7 @@ struct ManageStudentsView: View {
             return studentsArray
         default:
             return studentsArray.filter { student in
-                student.name!.localizedCaseInsensitiveContains(search)
+                student.name!.localizedCaseInsensitiveContains(search) || student.indexNumber!.localizedCaseInsensitiveContains(search)
             }
         }
     }

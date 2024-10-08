@@ -21,18 +21,36 @@ struct ManualAttendanceView: View {
     //    @Binding var alertToast: AlertToast
     //    @Binding var showAlertToast: Bool
     var searchedStudents: [Student] {
-        let studentsArray = students.compactMap { student in
-            student
-        }.sorted {
+        var studentsArray: [Student] = []
+        
+        // Filter students based on session
+        switch lesson.session! {
+        case "AM":
+            studentsArray = students.filter {
+                $0.session ?? "Unknown Sesison" == "AM"
+            }
+        case "PM":
+            studentsArray = students.filter {
+                $0.session ?? "Unknown Session" == "PM"
+            }
+        default:
+            // This is the "full day" case or something has gone horribly wrong case
+            studentsArray = students.compactMap({ student in
+                student
+            })
+        }
+        
+        studentsArray = studentsArray.sorted {
             ($0.indexNumber ?? "") < ($1.indexNumber ?? "")
         }
+        
         
         switch search {
         case "":
             return studentsArray
         default:
             return studentsArray.filter { student in
-                student.name!.localizedCaseInsensitiveContains(search)
+                student.name!.localizedCaseInsensitiveContains(search) || student.indexNumber!.localizedCaseInsensitiveContains(search)
             }
         }
     }
