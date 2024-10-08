@@ -103,7 +103,12 @@ struct ManualAttendanceView: View {
                     // A) get it done for all day as well and B) fix all that shit and check properly later
                     if let latestAtt = studentAttendances.first, let latestLesson = latestAtt.forLesson {
                         let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
-                        lessonFetchRequest.predicate = NSPredicate(format: "%K == %@", "session", selectedStudent!.session!)
+                        
+                        let sessionPredicate = NSPredicate(format: "%K == %@", "session", selectedStudent!.session!)
+                        let fullDayPredicate = NSPredicate(format: "%K == %@", "session", "fd")
+                        let sessionOrFullDayPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [sessionPredicate, fullDayPredicate])
+                        lessonFetchRequest.predicate = sessionOrFullDayPredicate
+                        
                         lessonFetchRequest.sortDescriptors = [.init(keyPath: \Lesson.date, ascending: false)]
                         
                         do {
@@ -112,6 +117,10 @@ struct ManualAttendanceView: View {
                                 let lessonIndex = lessons.firstIndex(of: lesson)!
                                 print("lessonIndex is \(lessonIndex)")
                                 if lessonIndex != lessons.count - 1 {
+                                    
+                                    // lessons var contains CHRONOLOGICAL student session history (i.e, every session the student was supposed to attend)
+                                    // if the LAST session the user was supposed to attend has an attendance for the student, keep up the streak
+                                    // if not reset it
                                     let previousChronologicalLesson = lessons[lessonIndex + 1]
                                     if previousChronologicalLesson == latestLesson {
                                         attendance.streak = latestAtt.streak + 1
@@ -132,27 +141,17 @@ struct ManualAttendanceView: View {
                             print(error.localizedDescription)
                             UINotificationFeedbackGenerator().notificationOccurred(.error)
                         }
-                           
                     } else {
                         attendance.streak = 1
                     }
-                    print(attendance.streak)
+                    
                     do {
-                        
-                        
-                        
                         try moc.save()
-                        //                        showAlertToast = true
-                        //                        alertToast = AlertToast(displayMode: .banner(.slide), type: .complete(.green), title: "Success", subTitle: "Attendance marked", style: .style( subTitleFont: .callout))
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     } catch {
                         print(error.localizedDescription)
                         UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        //                        showAlertToast = true
-                        //                        alertToast = AlertToast(displayMode: .banner(.slide), type: .error(.red), title: "An error occured", subTitle: error.localizedDescription)
-                        
                     }
-                    
                     dismiss()
                 }), secondaryButton: .cancel())
             }
