@@ -70,6 +70,7 @@ struct ManageStudentsView: View {
                                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                             } catch {
                                 print(error.localizedDescription)
+                                UINotificationFeedbackGenerator().notificationOccurred(.error)
                             }
                         }
                     } message: {

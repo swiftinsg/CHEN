@@ -50,8 +50,10 @@ struct AddLessonSheet: View {
                 do {
                     try moc.save()
                     dismiss()
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
-                    print("An error occured whilst saving the new lesson.")
+                    print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
                 
             }

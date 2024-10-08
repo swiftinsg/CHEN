@@ -22,8 +22,6 @@ struct AddStudentSheet: View {
     
     @State var cardID: String = ""
     
-    @Binding var showChangeToast: Bool
-    @Binding var alertToast: AlertToast
     
     var body: some View {
         Form {
@@ -60,9 +58,10 @@ struct AddStudentSheet: View {
                 
                 do {
                     try moc.save()
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
-                    showChangeToast = true
-                    alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
+                    print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
                 dismiss()
                 
@@ -74,9 +73,9 @@ struct AddStudentSheet: View {
             writer.completionHandler = { error in
                 if let error = error {
                     print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
-                showChangeToast = true
-                alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "User created")
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
                 dismiss()
             }
         }
