@@ -81,7 +81,7 @@ struct StudentView: View {
             }
             
             Section("Attended Lessons") {
-                let attendedLessons = (student.lessonsAttended?.allObjects as? [Attendance] ?? []).sorted(by: {
+                let attendedLessons = (student.attendances?.allObjects as? [Attendance] ?? []).sorted(by: {
                     ($0.recordedAt ?? .distantPast) < ($1.recordedAt ?? .distantPast)
                 })
                 
@@ -115,7 +115,7 @@ struct StudentView: View {
     }
     
     func getStreak(_ student: Student) -> String {
-        var attendances = student.lessonsAttended!.allObjects as! [Attendance]
+        var attendances = student.attendances!.allObjects as! [Attendance]
         // sort attendances by date as they're not ordered
         attendances.sort { att1, att2 in
             att1.recordedAt! > att2.recordedAt!

@@ -81,11 +81,6 @@ struct ManualAttendanceView: View {
                 Alert(title: Text("Attendance"),
                       message: Text("Mark \(selectedStudent?.name ?? "student") as attending?"),
                       primaryButton: .default(Text("Yes"), action: {
-                    let attendance = Attendance(context: moc)
-                    attendance.attendanceType = 1
-                    attendance.forLesson = lesson
-                    attendance.person = selectedStudent!
-                    attendance.recordedAt = Date()
                     
                     let studentUUID = selectedStudent!.id!
                     
@@ -95,11 +90,20 @@ struct ManualAttendanceView: View {
                     attFetchRequest.predicate = NSPredicate(format: "%K == %@", "id", studentUUID as CVarArg)
                     attFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Attendance.recordedAt, ascending: false)]
                     
-                    let studentAttendances = selectedStudent!.lessonsAttended!.allObjects as! [Attendance]
-                    
+                    var studentAttendances = selectedStudent!.attendances!.allObjects as! [Attendance]
+                    studentAttendances.sort {
+                        $0.forLesson!.date! > $1.forLesson!.date!
+                    }
+                    print(studentAttendances)
+
+                    // Add attendance record
+                    let attendance = Attendance(context: moc)
+                    attendance.attendanceType = 1
+                    attendance.forLesson = lesson
+                    attendance.person = selectedStudent!
+                    attendance.recordedAt = Date()
+
                     // Get latest lesson
-                    // NOTE: A lot of this shit implies that the student being checked is the same session as the lesson
-                    // A) get it done for all day as well and B) fix all that shit and check properly later
                     if let latestAtt = studentAttendances.first, let latestLesson = latestAtt.forLesson {
                         let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
                         
@@ -121,6 +125,8 @@ struct ManualAttendanceView: View {
                                     // if the LAST session the user was supposed to attend has an attendance for the student, keep up the streak
                                     // if not reset it
                                     let previousChronologicalLesson = lessons[lessonIndex + 1]
+                                    print(previousChronologicalLesson)
+                                    print("latest lesson: \(latestLesson)")
                                     if previousChronologicalLesson == latestLesson {
                                         attendance.streak = latestAtt.streak + 1
                                         print("added streak")
