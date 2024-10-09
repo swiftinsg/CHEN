@@ -29,7 +29,7 @@ struct ManageLessonsView: View {
             List {
                 ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                     Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
-                        ForEach(lessons) { lesson in
+                        ForEach(lessons, id: \.id) { lesson in
                             if let currentLessonDate = lesson.date,
                                Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
                                 LessonRowView(lesson: lesson)
@@ -38,34 +38,34 @@ struct ManageLessonsView: View {
                         .onDelete(perform: { indexSet in
                             for index in indexSet {
                                 let lesson = lessons[index]
-                                
                                 lessonToDelete = lesson
+                                moc.delete(lesson)
                             }
-                            
                             showWarningAlert = true
                         })
-                        .alert("Delete \(lessonToDelete?.name ?? "Unknown Lesson")",
-                               isPresented: $showWarningAlert) {
-                            Button("Delete", role: .destructive) {
-                                guard let lessonToDelete else { return }
-                                
-                                for attendance in lessonToDelete.attendances?.array as? [Attendance] ?? []  {
-                                    moc.delete(attendance)
-                                }
-                                moc.delete(lessonToDelete)
-                                
-                                do {
-                                    try moc.save()
-                                } catch {
-                                    print(error.localizedDescription)
-                                }
-                            }
-                        } message: {
-                            Text("This is irreversible.")
-                        }
+                        
 
                     }
                 }
+            }
+            .alert("Delete \(lessonToDelete?.name ?? "Unknown Lesson")?",
+                   isPresented: $showWarningAlert) {
+                Button("Delete", role: .destructive) {
+//                    guard let lessonToDelete else { return }
+//                    
+//                    moc.delete(lessonToDelete)
+                    
+                    do {
+                        try moc.save()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                Button("Cancel") {
+                    moc.rollback()
+                }
+            } message: {
+                Text("This is irreversible.")
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -84,9 +84,6 @@ struct ManageLessonsView: View {
                 }
             }
             .navigationTitle(Text("Lessons"))
-        }
-        .onAppear {
-            print(lessons)
         }
         
     }

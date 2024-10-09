@@ -17,6 +17,7 @@ class DataController: ObservableObject {
                 print("Core data failed to load: \(error.localizedDescription)")
             }
         }
+        container.viewContext.undoManager = UndoManager()
     }
 }
 
