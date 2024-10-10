@@ -115,10 +115,13 @@ struct StudentView: View {
     }
     
     func getStreak(_ student: Student) -> String {
-        var attendances = student.attendances!.allObjects as! [Attendance]
-        // sort attendances by date as they're not ordered
+        guard let attendanceSet = student.attendances else { return "0" }
+        var attendances = attendanceSet.map {
+            $0 as! Attendance
+        }
+        // sort attendances by lesson date as they're not ordered
         attendances.sort { att1, att2 in
-            att1.recordedAt! > att2.recordedAt!
+            att1.forLesson!.date! > att2.forLesson!.date!
         }
         if attendances.count > 0 {
             return String(attendances.first!.streak)

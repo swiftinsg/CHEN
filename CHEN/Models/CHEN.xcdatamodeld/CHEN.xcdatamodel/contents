@@ -4,6 +4,7 @@
         <attribute name="attendanceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="recordedAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="streak" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="streakStatus" attributeType="String" defaultValueString=""/>
         <relationship name="forLesson" maxCount="1" deletionRule="Nullify" destinationEntity="Lesson" inverseName="attendances" inverseEntity="Lesson"/>
         <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="attendances" inverseEntity="Student"/>
     </entity>

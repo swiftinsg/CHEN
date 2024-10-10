@@ -39,7 +39,12 @@ struct ManageLessonsView: View {
                             for index in indexSet {
                                 let lesson = lessons[index]
                                 lessonToDelete = lesson
-                                moc.delete(lesson)
+                                do {
+                                    try reconstructStreakTimeline(deleting: lesson, withContext: moc)
+                                } catch {
+                                    print(error.localizedDescription)
+                                }
+                                
                             }
                             showWarningAlert = true
                         })
@@ -50,18 +55,14 @@ struct ManageLessonsView: View {
             }
             .alert("Delete \(lessonToDelete?.name ?? "Unknown Lesson")?",
                    isPresented: $showWarningAlert) {
-                Button("Delete", role: .destructive) {
-//                    guard let lessonToDelete else { return }
-//                    
-//                    moc.delete(lessonToDelete)
-                    
+                Button("Delete", role: .destructive) {  
                     do {
                         try moc.save()
                     } catch {
                         print(error.localizedDescription)
                     }
                 }
-                Button("Cancel") {
+                Button("Cancel", role: .cancel) {
                     moc.rollback()
                 }
             } message: {

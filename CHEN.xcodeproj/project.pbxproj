@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		147B2E402CB65C8F007D7E0C /* ReconstructStreakTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B2E3F2CB65C8F007D7E0C /* ReconstructStreakTimeline.swift */; };
+		147B2E432CB67C71007D7E0C /* String+LocalisedError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B2E422CB67C71007D7E0C /* String+LocalisedError.swift */; };
+		147B2E462CB7A976007D7E0C /* StreakStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B2E452CB7A976007D7E0C /* StreakStatus.swift */; };
+		147B2E482CB7A9D1007D7E0C /* Attendance+StreakChangeReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B2E472CB7A9D1007D7E0C /* Attendance+StreakChangeReason.swift */; };
+		147B2E4B2CB7ACE9007D7E0C /* CaluclateStreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B2E4A2CB7ACE9007D7E0C /* CaluclateStreak.swift */; };
+		147B2E4D2CB7BE5D007D7E0C /* RecalculateStreaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147B2E4C2CB7BE5D007D7E0C /* RecalculateStreaks.swift */; };
 		1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */; };
 		1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C263E2A90BC5E002FE50E /* CHENApp.swift */; };
 		1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C26402A90BC5E002FE50E /* HomeView.swift */; };
@@ -34,6 +40,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		147B2E3F2CB65C8F007D7E0C /* ReconstructStreakTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconstructStreakTimeline.swift; sourceTree = "<group>"; };
+		147B2E422CB67C71007D7E0C /* String+LocalisedError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+LocalisedError.swift"; sourceTree = "<group>"; };
+		147B2E452CB7A976007D7E0C /* StreakStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakStatus.swift; sourceTree = "<group>"; };
+		147B2E472CB7A9D1007D7E0C /* Attendance+StreakChangeReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attendance+StreakChangeReason.swift"; sourceTree = "<group>"; };
+		147B2E4A2CB7ACE9007D7E0C /* CaluclateStreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaluclateStreak.swift; sourceTree = "<group>"; };
+		147B2E4C2CB7BE5D007D7E0C /* RecalculateStreaks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecalculateStreaks.swift; sourceTree = "<group>"; };
 		1A0BB4032AFE04CD00A19359 /* EditStudentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStudentView.swift; sourceTree = "<group>"; };
 		1A0C263B2A90BC5E002FE50E /* CHEN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0C263E2A90BC5E002FE50E /* CHENApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHENApp.swift; sourceTree = "<group>"; };
@@ -73,6 +85,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		147B2E3E2CB65C74007D7E0C /* Helpers & Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				147B2E492CB7ACD1007D7E0C /* Helpers */,
+			);
+			path = "Helpers & Extensions";
+			sourceTree = "<group>";
+		};
+		147B2E412CB67C63007D7E0C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				147B2E422CB67C71007D7E0C /* String+LocalisedError.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		147B2E442CB7A940007D7E0C /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				147B2E452CB7A976007D7E0C /* StreakStatus.swift */,
+				147B2E472CB7A9D1007D7E0C /* Attendance+StreakChangeReason.swift */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		147B2E492CB7ACD1007D7E0C /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				147B2E3F2CB65C8F007D7E0C /* ReconstructStreakTimeline.swift */,
+				147B2E4A2CB7ACE9007D7E0C /* CaluclateStreak.swift */,
+				147B2E4C2CB7BE5D007D7E0C /* RecalculateStreaks.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		1A0C26322A90BC5E002FE50E = {
 			isa = PBXGroup;
 			children = (
@@ -118,6 +165,7 @@
 		1A0C26512A90C01C002FE50E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				147B2E442CB7A940007D7E0C /* Enums */,
 				1A1A5B162A90DD8500B6FDDD /* CHEN.xcdatamodeld */,
 				1A1A5B1F2A90E14A00B6FDDD /* DataController.swift */,
 			);
@@ -179,6 +227,7 @@
 		1AE456832AA5691B009CEE12 /* Lesson Check-in */ = {
 			isa = PBXGroup;
 			children = (
+				147B2E3E2CB65C74007D7E0C /* Helpers & Extensions */,
 				1AE456852AA5694A009CEE12 /* Views */,
 			);
 			path = "Lesson Check-in";
@@ -218,6 +267,7 @@
 		1AE4568B2AA5C105009CEE12 /* Helpers & Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				147B2E412CB67C63007D7E0C /* Extensions */,
 				1A0C284D2B90697000F3BFDF /* Database Helpers */,
 			);
 			path = "Helpers & Extensions";
@@ -309,14 +359,20 @@
 				1A1A5B182A90DD8600B6FDDD /* CHEN.xcdatamodeld in Sources */,
 				1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */,
 				32A2A5B42BAAC15400C935FD /* StudentRowView.swift in Sources */,
+				147B2E482CB7A9D1007D7E0C /* Attendance+StreakChangeReason.swift in Sources */,
 				1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */,
 				1A0C284C2B90695C00F3BFDF /* BackupPersistentStore.swift in Sources */,
 				1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */,
 				1A1A5B202A90E14A00B6FDDD /* DataController.swift in Sources */,
 				32A2A5B82BAAC57B00C935FD /* SessionInformationEditableField.swift in Sources */,
 				1A0C26562A90C4AE002FE50E /* ScanView.swift in Sources */,
+				147B2E402CB65C8F007D7E0C /* ReconstructStreakTimeline.swift in Sources */,
 				322BEA992B9AF12700A6B1EA /* BulkImportStudentView.swift in Sources */,
+				147B2E432CB67C71007D7E0C /* String+LocalisedError.swift in Sources */,
+				147B2E462CB7A976007D7E0C /* StreakStatus.swift in Sources */,
 				1AE456882AA56BE3009CEE12 /* ManageLessonsView.swift in Sources */,
+				147B2E4D2CB7BE5D007D7E0C /* RecalculateStreaks.swift in Sources */,
+				147B2E4B2CB7ACE9007D7E0C /* CaluclateStreak.swift in Sources */,
 				1A0BB4042AFE04CD00A19359 /* EditStudentView.swift in Sources */,
 				1AE4569B2AC92C33009CEE12 /* AddStudentSheet.swift in Sources */,
 				1A0C28462B6DD4B800F3BFDF /* ManualAttendanceView.swift in Sources */,
