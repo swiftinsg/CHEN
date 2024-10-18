@@ -96,13 +96,17 @@ struct ManualAttendanceView: View {
                     // Check if there are attended lessons AFTER this lesson
                     // If so they need to be recalculated
                     // Streak history before this is not affected
-                    studentAttendedLessons.filter {
+                    studentAttendedLessons = studentAttendedLessons.filter {
                         $0.date! > lesson.date!
                     }
                     if studentAttendedLessons.count > 0 {
                         // Recalculate ALL streaks (may bridge two streaks together)
                         do {
-                            try recalculateStreaks(for: unwrappedSelectedStudent, withContext: moc)
+                            guard let studentAttendances = unwrappedSelectedStudent.attendances else { throw "Student attendances do not exist" }
+                            let attendances = studentAttendances.allObjects.map {
+                                $0 as! Attendance
+                            }
+                            try recalculateStreaks(for: attendances, withContext: moc)
                             try moc.save()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
                         } catch {

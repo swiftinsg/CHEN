@@ -9,11 +9,8 @@ import Foundation
 import SwiftUI
 import CoreData
 
-func recalculateStreaks(for student: Student, withContext moc: NSManagedObjectContext) throws {
-    guard let studentAttendances = student.attendances else { throw "Student attendances do not exist" }
-    var attendances = studentAttendances.allObjects.map {
-        $0 as! Attendance
-    }
+func recalculateStreaks(for attendances: [Attendance], withContext moc: NSManagedObjectContext) throws {
+    var attendances = attendances
     
     // reverse chronological order
     attendances.sort { att1, att2 in
@@ -26,7 +23,6 @@ func recalculateStreaks(for student: Student, withContext moc: NSManagedObjectCo
             print(error.localizedDescription)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
-        
     }
     
     print(attendances)

@@ -81,7 +81,7 @@ func calculateStreak(for attendance: Attendance, withContext moc: NSManagedObjec
             // if the LAST session the user was supposed to attend has an attendance for the student, keep up the streak
             // if not reset it
             let previousChronologicalLesson = lessons[lessonIndex + 1]
-            
+
             if previousChronologicalLesson == previousAttendedLesson {
                 let previousStreak = studentAttendances[attendanceIndex + 1].streak
                 attendance.streak = previousStreak + 1

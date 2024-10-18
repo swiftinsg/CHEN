@@ -37,7 +37,6 @@ struct AddStudentSheet: View {
                         Text(String($0))
                     }
                 }
-                
             }
             Button("Save Student") {
                 let student = Student(context:moc)

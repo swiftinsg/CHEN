@@ -26,25 +26,29 @@ struct ManageLessonsView: View {
                 }
             }).sorted(by: >)
             
+            let sortedLessons = lessons.sorted { less1, less2 in
+                less1.date! > less2.date!
+            }
             List {
                 ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                     Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
-                        ForEach(lessons, id: \.id) { lesson in
+                        
+                        ForEach(sortedLessons, id: \.id) { lesson in
                             if let currentLessonDate = lesson.date,
                                Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
                                 LessonRowView(lesson: lesson)
                             }
                         }
                         .onDelete(perform: { indexSet in
+                            print("indexes to be deleted \(indexSet)")
                             for index in indexSet {
-                                let lesson = lessons[index]
+                                let lesson = sortedLessons[index]
                                 lessonToDelete = lesson
                                 do {
                                     try reconstructStreakTimeline(deleting: lesson, withContext: moc)
                                 } catch {
                                     print(error.localizedDescription)
                                 }
-                                
                             }
                             showWarningAlert = true
                         })

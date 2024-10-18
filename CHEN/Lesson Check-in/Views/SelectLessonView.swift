@@ -13,6 +13,7 @@ struct SelectLessonView: View {
     var body: some View {
         NavigationStack {
             let lessonDates: [Date] = Set(lessons.compactMap { lesson in
+                
                 if let date = lesson.date {
                     return Calendar.current.startOfDay(for: date)
                 } else {

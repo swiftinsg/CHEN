@@ -41,6 +41,8 @@ struct AddLessonSheet: View {
             }
             
             Button("Save Lesson") {
+                
+                // Recalc streaks after lesson creation
                 let lesson = Lesson(context:moc)
                 lesson.id = UUID()
                 lesson.name = name
@@ -48,6 +50,7 @@ struct AddLessonSheet: View {
                 lesson.lessonLabel = lessonLabel
                 lesson.session = lessonSession
                 do {
+                    try reconstructStreakTimeline(inserting: lesson, withContext: moc)
                     try moc.save()
                     dismiss()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)

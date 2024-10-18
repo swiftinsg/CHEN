@@ -82,7 +82,7 @@ struct StudentView: View {
             
             Section("Attended Lessons") {
                 let attendedLessons = (student.attendances?.allObjects as? [Attendance] ?? []).sorted(by: {
-                    ($0.recordedAt ?? .distantPast) < ($1.recordedAt ?? .distantPast)
+                    ($0.forLesson!.date!) > ($1.forLesson!.date!)
                 })
                 
                 ForEach(attendedLessons, id: \.id) { attendanceRecord in
@@ -92,8 +92,14 @@ struct StudentView: View {
                     for index in indexSet {
                         let attendance = attendedLessons[index]
                         moc.delete(attendance)
+                        
                     }
                     do {
+                        guard let studentAttendances = student.attendances else { throw "Student attendances do not exist" }
+                        let attendances = studentAttendances.allObjects.map {
+                            $0 as! Attendance
+                        }
+                        try recalculateStreaks(for: attendances, withContext: moc)
                         try moc.save()
                     } catch {
                         print(error.localizedDescription)

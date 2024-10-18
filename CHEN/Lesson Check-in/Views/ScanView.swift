@@ -60,6 +60,7 @@ struct ScanView: View {
                 guard let message = messages.first,
                       let record = message.records.first,
                       let studentUUID = UUID(uuidString: String(decoding: record.payload, as: UTF8.self)) else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                     return "This is not a CHEN registered card."
                 }
                 
@@ -68,63 +69,67 @@ struct ScanView: View {
                 fetchRequest.predicate = NSPredicate(
                     format: "%K == %@", "id", studentUUID as CVarArg
                 )
-                
-                let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
-                
-                lessonFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Lesson.date, ascending: false)]
                 do {
-                    let students = try moc.fetch(fetchRequest)
+                    var students = try moc.fetch(fetchRequest)
+
                     guard let foundStudent = students.first else {
                         return "Student not found"
-                    }
-                    let lessons = try moc.fetch(lessonFetchRequest)
-                    
-                    var streak = 0
-                    
-                    // Get all lessons (newest to first), filter for IF student session equals session
-                    // OR if the lesson is a full day session
-                    let filteredLessons = lessons.filter({ foundStudent.session ?? "nothing" == $0.session ?? "nothing" || $0.session ?? "nothing" == "fd"})
-                    
-                    // Go through each lesson, find if student attended, if they did +1 streak
-                    for lesson in filteredLessons {
-                        if let att = lesson.attendances {
-                            let attendances = att.array as! [Attendance]
-                            let search = attendances.filter({ $0.person!.id == foundStudent.id })
-                            if search.count > 0 {
-                                // Student attended lesson
-                                // Add one to streak
-                                streak += 1
-                            } else {
-                                // Streak ends here break out of loop
-                                break
-                            }
-                        }
                     }
                     
                     if let name = foundStudent.name {
                         studentName = name
+                        
                         
                         // create attendance object
                         let attendance = Attendance(context: moc)
                         attendance.attendanceType = 1
                         attendance.forLesson = lesson
                         attendance.recordedAt = Date.now
-                        
                         attendance.person = foundStudent
                         
-                        // update streak
-                        foundStudent.streak = Int16(streak)
+                        guard let studentAttendedLessonsSet = foundStudent.attendances else { return "Student attendances do not exist" }
+                        var studentAttendedLessons: [Lesson] = studentAttendedLessonsSet.allObjects.compactMap {
+                            let att = $0 as! Attendance
+                            return att.forLesson!
+                        }
+                        // Calc streak
+                        // Check if there are attended lessons AFTER this lesson
+                        // If so they need to be recalculated
+                        // Streak history before this is not affected
+                        studentAttendedLessons = studentAttendedLessons.filter {
+                            $0.date! > lesson.date!
+                        }
+                        if studentAttendedLessons.count > 0 {
+                            // Recalculate ALL streaks (may bridge two streaks together)
+                            
+                            guard let studentAttendances = foundStudent.attendances else { throw "Student attendances do not exist" }
+                            let attendances = studentAttendances.allObjects.map {
+                                $0 as! Attendance
+                            }
+                            try recalculateStreaks(for: attendances, withContext: moc)
+                            try moc.save()
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        } else {
+                            // This incoming streak is the latest, calculate it as per normal
+                            
+                            try calculateStreak(for: attendance, withContext: moc)
+                            try moc.save()
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                            
+                        }
                         
                         try moc.save()
-                        
-                        return name
+                        return "Welcome, \(name)!"
                     } else {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                         return "Student name not identified"
                     }
                 } catch {
                     print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                     return "There was an error scanning the student: \(error.localizedDescription)"
                 }
+                
             }
         }
         .navigationTitle(lesson.session ?? "")
