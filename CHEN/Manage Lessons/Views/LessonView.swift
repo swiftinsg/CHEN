@@ -111,7 +111,8 @@ struct LessonView: View {
                     HStack {
                         Text("Session")
                         Spacer()
-                        Text(lesson.session ?? "Unknown")
+                        
+                        Text(formatSession())
                             .textSelection(.enabled)
                             .foregroundStyle(.secondary)
                     }
@@ -185,14 +186,14 @@ struct LessonView: View {
         }
         .searchable(text: $searchTerm)
         .onAppear {
-            switch lesson.session ?? "AM" {
-            case "AM":
+            switch lesson.session?.lowercased() ?? "AM" {
+            case "am":
                 absenteeFilter = "Morning"
                 break
-            case "PM":
+            case "pm":
                 absenteeFilter = "Afternoon"
                 break
-            case "All-day":
+            case "fd":
                 absenteeFilter = "All"
                 break
             default:
@@ -200,7 +201,23 @@ struct LessonView: View {
             }
             
         }
+        
+        
     }
-    
+    func formatSession() -> String {
+        var session = ""
+        switch lesson.session?.lowercased() ?? "Unknown" {
+        case "am":
+            session = "AM"
+        case "pm":
+            session = "PM"
+        case "fd":
+            session = "Full day"
+        default:
+            session = "Unknown"
+        }
+        
+        return session
+    }
 }
 
