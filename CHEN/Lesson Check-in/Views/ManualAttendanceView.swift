@@ -40,7 +40,15 @@ struct ManualAttendanceView: View {
             ($0.indexNumber ?? "") < ($1.indexNumber ?? "")
         }
         
+        // Remove students that are known to have attended already
+        let attendedStudents: [Student] = lesson.attendances?.array.map({ att in
+            let attendance = att as! Attendance
+            return attendance.person!
+        }) ?? []
         
+        studentsArray = studentsArray.filter {
+            !attendedStudents.contains($0)
+        }
         switch search {
         case "":
             return studentsArray
