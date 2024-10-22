@@ -30,13 +30,19 @@ struct AddLessonSheet: View {
                     Text("Lesson Date")
                 }
             }
+            
             Section("Lesson Session") {
                 Picker("Lesson Session", selection: $lessonSession) {
                     Text("AM").tag("AM")
                     Text("PM").tag("PM")
-                }.pickerStyle(.segmented)
+                    Text("Full-day").tag("fd")
+                }
+                .pickerStyle(.segmented)
             }
+            
             Button("Save Lesson") {
+                
+                // Recalc streaks after lesson creation
                 let lesson = Lesson(context:moc)
                 lesson.id = UUID()
                 lesson.name = name
@@ -44,13 +50,17 @@ struct AddLessonSheet: View {
                 lesson.lessonLabel = lessonLabel
                 lesson.session = lessonSession
                 do {
+                    try reconstructStreakTimeline(inserting: lesson, withContext: moc)
                     try moc.save()
                     dismiss()
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
-                    print("An error occured whilst saving the new lesson.")
+                    print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
                 
             }
+            .disabled(name == "" || lessonLabel == "")
         }
         
     }

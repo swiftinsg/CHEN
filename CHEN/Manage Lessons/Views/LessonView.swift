@@ -18,6 +18,7 @@ struct LessonView: View {
     @State var searchTerm: String = ""
     @State var absenteeFilter: String = "Morning"
     
+    
     @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     
     var filteredAttendances: [Attendance] {
@@ -110,7 +111,8 @@ struct LessonView: View {
                     HStack {
                         Text("Session")
                         Spacer()
-                        Text(lesson.session ?? "Unknown")
+                        
+                        Text(formatSession())
                             .textSelection(.enabled)
                             .foregroundStyle(.secondary)
                     }
@@ -174,7 +176,7 @@ struct LessonView: View {
                             Text("Afternoon")
                                 .tag("Afternoon")
                             Text("All")
-                                .tag("all")
+                                .tag("All")
                         }
                         .textCase(.lowercase)
                     }
@@ -183,7 +185,39 @@ struct LessonView: View {
             
         }
         .searchable(text: $searchTerm)
+        .onAppear {
+            switch lesson.session?.lowercased() ?? "AM" {
+            case "am":
+                absenteeFilter = "Morning"
+                break
+            case "pm":
+                absenteeFilter = "Afternoon"
+                break
+            case "fd":
+                absenteeFilter = "All"
+                break
+            default:
+                break
+            }
+            
+        }
+        
+        
     }
-    
+    func formatSession() -> String {
+        var session = ""
+        switch lesson.session?.lowercased() ?? "Unknown" {
+        case "am":
+            session = "AM"
+        case "pm":
+            session = "PM"
+        case "fd":
+            session = "Full day"
+        default:
+            session = "Unknown"
+        }
+        
+        return session
+    }
 }
 

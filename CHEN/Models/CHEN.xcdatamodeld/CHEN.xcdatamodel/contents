@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B81" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="22G74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Attendance" representedClassName="Attendance" syncable="YES" codeGenerationType="class">
         <attribute name="attendanceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="recordedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="streak" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="streakStatus" attributeType="String" defaultValueString=""/>
         <relationship name="forLesson" maxCount="1" deletionRule="Nullify" destinationEntity="Lesson" inverseName="attendances" inverseEntity="Lesson"/>
-        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="lessonsAttended" inverseEntity="Student"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="attendances" inverseEntity="Student"/>
     </entity>
     <entity name="Lesson" representedClassName="Lesson" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
@@ -12,7 +14,7 @@
         <attribute name="lessonLabel" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="session" attributeType="String"/>
-        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Attendance" inverseName="forLesson" inverseEntity="Attendance"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attendance" inverseName="forLesson" inverseEntity="Attendance"/>
     </entity>
     <entity name="Student" representedClassName="Student" syncable="YES" codeGenerationType="class">
         <attribute name="batch" attributeType="Integer 16" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
@@ -21,6 +23,7 @@
         <attribute name="indexNumber" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="session" optional="YES" attributeType="String"/>
-        <relationship name="lessonsAttended" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="person" inverseEntity="Attendance"/>
+        <attribute name="streak" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="person" inverseEntity="Attendance"/>
     </entity>
 </model>

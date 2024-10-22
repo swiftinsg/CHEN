@@ -19,7 +19,7 @@ struct StudentRowView: View {
             HStack {
                 Text(student.indexNumber ?? "")
                     .monospaced()
-                Text(student.name!)
+                Text(student.name ?? "")
                 Spacer()
                 
                 if let attendance {

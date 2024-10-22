@@ -7,14 +7,17 @@
 
 import SwiftUI
 import CoreData
-import AlertToast
 
 struct ManageStudentsView: View {
     
     @State private var bulkImportStudentPresented = false
+    @Environment(\.managedObjectContext) private var moc
     
     @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     @State var showAddSheet: Bool = false
+    
+    @State var showWarningAlert: Bool = false
+    @State var studentToDelete: Student?
     var deletedStudent: Int = 0
     
     var searchedStudents: [Student] {
@@ -26,51 +29,51 @@ struct ManageStudentsView: View {
             return studentsArray
         default:
             return studentsArray.filter { student in
-                student.name!.localizedCaseInsensitiveContains(search)
+                student.name!.localizedCaseInsensitiveContains(search) || student.indexNumber!.localizedCaseInsensitiveContains(search)
             }
         }
     }
     
     @State var showDeleteAlert: Bool = false
     @State var search: String = ""
-    @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "")
-    @State var showChangeToast: Bool = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
-                    // Implement searches properly (see LessonView)
-                    List(searchedStudents) { student in
-                        NavigationLink {
-                            StudentView(student: student)
-                        } label: {
-                            HStack {
-                                Text(student.indexNumber ?? "")
-                                    .monospaced()
-                                Text(student.name ?? "Unknown Data")
-                            }
+
+                    List {
+                        ForEach(searchedStudents) { student in
+                            StudentRowView(student: student)
                         }
+                        .onDelete(perform: { indexSet in
+                            for index in indexSet {
+                                let students = students[index]
+                                
+                                studentToDelete = students
+                            }
+                            showWarningAlert = true
+                        })
+                       
                         
-                        .swipeActions {
-                            NavigationStack {
-                                NavigationLink {
-                                    EditStudentView(student: student, alertToast: $alertToast, showChangeToast: $showChangeToast)
-                                        .navigationTitle("Edit Student")
-                                } label: {
-                                    Button {
-                                        
-                                    } label: {
-                                        Text("Edit")
-                                    }
-                                    
-                                }
-                            }
-                            Button(role: .destructive) {
-                                print("delete button pressed")
-                            } label: {
-                                Text("Delete")
+                    }
+                    .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")",
+                           isPresented: $showWarningAlert) {
+                        Button("Delete", role: .destructive) {
+                            guard let studentToDelete else { return }
+                            
+                            moc.delete(studentToDelete)
+                            
+                            do {
+                                try moc.save()
+                                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                            } catch {
+                                print(error.localizedDescription)
+                                UINotificationFeedbackGenerator().notificationOccurred(.error)
                             }
                         }
+                    } message: {
+                        Text("This is irreversible.")
                     }
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -94,17 +97,15 @@ struct ManageStudentsView: View {
                     }
                     .sheet(isPresented: $showAddSheet) {
                         NavigationStack {
-                            AddStudentSheet(showChangeToast: $showChangeToast, alertToast: $alertToast)
+                            AddStudentSheet()
                                 .navigationTitle("Create Student")
                         }
                     }
                     .searchable(text: $search)
+                    
                 }
             }.navigationTitle(Text("Students"))
         }
-        .toast(isPresenting: $showChangeToast, alert: {
-            alertToast
-        })
         .sheet(isPresented: $bulkImportStudentPresented) {
             BulkImportStudentView()
         }

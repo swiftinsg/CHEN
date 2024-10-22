@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftNFC
-import AlertToast
 
 struct EditStudentView: View {
     @Environment(\.dismiss) private var dismiss
@@ -24,9 +23,7 @@ struct EditStudentView: View {
     @State var batch: Int = Calendar.current.dateComponents([.year], from: Date()).year!
     
     @State var cardID: String = ""
-    
-    @Binding var alertToast: AlertToast
-    @Binding var showChangeToast: Bool
+
     var body: some View {
         Form {
             Section(header: Text("Student Information")) {
@@ -47,14 +44,12 @@ struct EditStudentView: View {
                 do {
                     showCardAlert = true
                     try moc.save()
-                    
-                    // Toast notification after saving
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
-                    
-                    showChangeToast = true
-                    alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
-                    
+                    print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
+            
             }
             .disabled(student.indexNumber! == "" || student.name == "")
         }
@@ -64,8 +59,6 @@ struct EditStudentView: View {
                     if let error = error {
                         print(error.localizedDescription)
                     }
-                    showChangeToast = true
-                    alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "Update successful")
                     dismiss()
                 }
             }
@@ -78,8 +71,6 @@ struct EditStudentView: View {
                 writer.write()
             }
             Button("No", role: .cancel) {
-                showChangeToast = true
-                alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "Update successful")
                 dismiss()
             }
         }

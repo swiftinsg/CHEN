@@ -35,13 +35,7 @@ struct StudentView: View {
                 }
                 
                 HStack {
-                    Text("Index Number")
-                    Spacer()
-                    Text(student.indexNumber ?? "")
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                        .multilineTextAlignment(.trailing)
-                        .monospaced()
+                    SessionInformationEditableField(title: "Index Number", placeholder: "Index Number", value: $student.indexNumber)
                 }
                 
                 HStack {
@@ -57,7 +51,16 @@ struct StudentView: View {
                 HStack {
                     Text("Session")
                     Spacer()
-                    Text(student.session ?? "No Value")
+                    Text(student.session ?? "No Session")
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.trailing)
+                }
+                
+                HStack {
+                    Text("Streak")
+                    Spacer()
+                    Text(getStreak(student))
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                         .multilineTextAlignment(.trailing)
@@ -78,8 +81,8 @@ struct StudentView: View {
             }
             
             Section("Attended Lessons") {
-                let attendedLessons = (student.lessonsAttended?.allObjects as? [Attendance] ?? []).sorted(by: {
-                    ($0.recordedAt ?? .distantPast) < ($1.recordedAt ?? .distantPast)
+                let attendedLessons = (student.attendances?.allObjects as? [Attendance] ?? []).sorted(by: {
+                    ($0.forLesson!.date!) > ($1.forLesson!.date!)
                 })
                 
                 ForEach(attendedLessons, id: \.id) { attendanceRecord in
@@ -89,8 +92,14 @@ struct StudentView: View {
                     for index in indexSet {
                         let attendance = attendedLessons[index]
                         moc.delete(attendance)
+                        
                     }
                     do {
+                        guard let studentAttendances = student.attendances else { throw "Student attendances do not exist" }
+                        let attendances = studentAttendances.allObjects.map {
+                            $0 as! Attendance
+                        }
+                        try recalculateStreaks(for: attendances, withContext: moc)
                         try moc.save()
                     } catch {
                         print(error.localizedDescription)
@@ -109,6 +118,24 @@ struct StudentView: View {
             }
         }
         .navigationTitle(student.name ?? "")
+    }
+    
+    func getStreak(_ student: Student) -> String {
+        guard let attendanceSet = student.attendances else { return "0" }
+        var attendances = attendanceSet.map {
+            $0 as! Attendance
+        }
+        // sort attendances by lesson date as they're not ordered
+        attendances.sort { att1, att2 in
+            att1.forLesson!.date! > att2.forLesson!.date!
+        }
+        if attendances.count > 0 {
+            return String(attendances.first!.streak)
+        } else {
+            return "0"
+        }
+        
+        
     }
     
     

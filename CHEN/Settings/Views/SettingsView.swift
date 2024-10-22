@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftNFC
 import CoreData
 import CoreNFC
-import AlertToast
 
 struct SettingsView: View {
     @ObservedObject var reader = NFCReader()

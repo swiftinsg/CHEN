@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ManageLessonsView: View {
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.date, ascending: false)]) var lessons: FetchedResults<Lesson>
+    @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.session, ascending: true)]) var lessons: FetchedResults<Lesson>
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var moc
 
@@ -26,46 +26,51 @@ struct ManageLessonsView: View {
                 }
             }).sorted(by: >)
             
+            let sortedLessons = lessons.sorted { less1, less2 in
+                less1.date! > less2.date!
+            }
             List {
                 ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                     Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
-                        ForEach(lessons) { lesson in
+                        
+                        ForEach(sortedLessons, id: \.id) { lesson in
                             if let currentLessonDate = lesson.date,
                                Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
                                 LessonRowView(lesson: lesson)
                             }
                         }
                         .onDelete(perform: { indexSet in
+                            print("indexes to be deleted \(indexSet)")
                             for index in indexSet {
-                                let lesson = lessons[index]
-                                
+                                let lesson = sortedLessons[index]
                                 lessonToDelete = lesson
-                            }
-                            
-                            showWarningAlert = true
-                        })
-                        .alert("Delete \(lessonToDelete?.name ?? "Unknown Lesson")",
-                               isPresented: $showWarningAlert) {
-                            Button("Delete", role: .destructive) {
-                                guard let lessonToDelete else { return }
-                                
-                                for attendance in lessonToDelete.attendances?.array as? [Attendance] ?? []  {
-                                    moc.delete(attendance)
-                                }
-                                moc.delete(lessonToDelete)
-                                
                                 do {
-                                    try moc.save()
+                                    try reconstructStreakTimeline(deleting: lesson, withContext: moc)
                                 } catch {
                                     print(error.localizedDescription)
                                 }
                             }
-                        } message: {
-                            Text("This is irreversible.")
-                        }
+                            showWarningAlert = true
+                        })
+                        
 
                     }
                 }
+            }
+            .alert("Delete \(lessonToDelete?.name ?? "Unknown Lesson")?",
+                   isPresented: $showWarningAlert) {
+                Button("Delete", role: .destructive) {  
+                    do {
+                        try moc.save()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                Button("Cancel", role: .cancel) {
+                    moc.rollback()
+                }
+            } message: {
+                Text("This is irreversible.")
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
