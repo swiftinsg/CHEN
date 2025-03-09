@@ -9,14 +9,14 @@ import SwiftUI
 import SwiftNFC
 import CoreData
 import SwiftUINFC
-import CoreNFC
-
+import SwiftData
 struct ScanView: View {
     @ObservedObject var reader = NFCReader()
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var moc
-    
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @State var studentName: String = "Scan in a student!"
     @State var lesson: Lesson
     
@@ -48,11 +48,9 @@ struct ScanView: View {
                     }
                 }
                 
-                let attendances = lesson.attendances?.array as? [Attendance]
-                
                 Section("Marked attendance") {
-                    ForEach(attendances ?? []) { attendance in
-                        Text(attendance.person?.name ?? "")
+                    ForEach(lesson.attendances ?? []) { attendance in
+                        Text(attendance.person!.name)
                     }
                 }
             }
@@ -64,66 +62,34 @@ struct ScanView: View {
                     return "This is not a CHEN registered card."
                 }
                 
-                let fetchRequest: NSFetchRequest<Student> = Student.fetchRequest()
+                //                let fetchRequest: NSFetchRequest<Student> = Student.fetchRequest()
+                //
+                //                fetchRequest.predicate = NSPredicate(
+                //                    format: "%K == %@", "id", studentUUID as CVarArg
+                //                )
                 
-                fetchRequest.predicate = NSPredicate(
-                    format: "%K == %@", "id", studentUUID as CVarArg
-                )
-                do {
-                    var students = try moc.fetch(fetchRequest)
 
+                let studentFetchDescriptor = FetchDescriptor<Student>(predicate: #Predicate<Student> { student in
+                    student.uuid == studentUUID
+                })
+                do {
+                    let students = try mc.fetch(studentFetchDescriptor)
                     guard let foundStudent = students.first else {
-                        return "Student not found"
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+                        return "Student not found."
                     }
                     
-                    if let name = foundStudent.name {
-                        studentName = name
-                        
-                        
-                        // create attendance object
-                        let attendance = Attendance(context: moc)
-                        attendance.attendanceType = 1
-                        attendance.forLesson = lesson
-                        attendance.recordedAt = Date.now
-                        attendance.person = foundStudent
-                        
-                        guard let studentAttendedLessonsSet = foundStudent.attendances else { return "Student attendances do not exist" }
-                        var studentAttendedLessons: [Lesson] = studentAttendedLessonsSet.allObjects.compactMap {
-                            let att = $0 as! Attendance
-                            return att.forLesson!
-                        }
-                        // Calc streak
-                        // Check if there are attended lessons AFTER this lesson
-                        // If so they need to be recalculated
-                        // Streak history before this is not affected
-                        studentAttendedLessons = studentAttendedLessons.filter {
-                            $0.date! > lesson.date!
-                        }
-                        if studentAttendedLessons.count > 0 {
-                            // Recalculate ALL streaks (may bridge two streaks together)
-                            
-                            guard let studentAttendances = foundStudent.attendances else { throw "Student attendances do not exist" }
-                            let attendances = studentAttendances.allObjects.map {
-                                $0 as! Attendance
-                            }
-                            try recalculateStreaks(for: attendances, withContext: moc)
-                            try moc.save()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } else {
-                            // This incoming streak is the latest, calculate it as per normal
-                            
-                            try calculateStreak(for: attendance, withContext: moc)
-                            try moc.save()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                            
-                        }
-                        
-                        try moc.save()
-                        return "Welcome, \(name)!"
-                    } else {
-                        UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        return "Student name not identified"
+                    studentName = foundStudent.name
+                    
+                    do {
+                        try markAttendance(for: foundStudent, forLesson: lesson, withContainer: mc.container)
+                        try mc.save()
+                    } catch {
+                        return error.localizedDescription
                     }
+                    
+                    return "Welcome, \(foundStudent.name)!"
+                    
                 } catch {
                     print(error.localizedDescription)
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
@@ -132,7 +98,7 @@ struct ScanView: View {
                 
             }
         }
-        .navigationTitle(lesson.session ?? "")
+        .navigationTitle(lesson.session.rawValue)
     }
 }
 

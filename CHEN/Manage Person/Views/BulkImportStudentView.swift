@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BulkImportStudentView: View {
+    
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -138,19 +142,14 @@ struct BulkImportStudentView: View {
                 let data = line.components(separatedBy: "\t")
                 let name = data[0]
                 let indexNumber = data[1]
-                let session = data[2]
-                let batch = Int(data[3])!
+                let session = Session(rawValue: data[2]) ?? .AM
+                let batch = Int16(data[3])!
                 
-                let newStudent = Student(context:moc)
-                
-                newStudent.id = UUID()
-                newStudent.name = name
-                newStudent.indexNumber = indexNumber
-                newStudent.session = session
-                newStudent.batch = Int16(batch)
+                let newStudent = Student(id: UUID(), indexNumber: indexNumber, name: name, session: session, batch: batch)
+                mc.insert(newStudent)
                 
                 do {
-                    try moc.save()
+                    try mc.save()
                 } catch {
                     await MainActor.run {
                         state = .error("Could not save student")

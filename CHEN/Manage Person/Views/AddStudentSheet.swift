@@ -7,13 +7,16 @@
 
 import SwiftUI
 import SwiftNFC
+import SwiftData
 struct AddStudentSheet: View {
     @Environment(\.dismiss) private var dismiss
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     @ObservedObject var writer = NFCWriter()
     @State var name: String = ""
     @State var indexNumber: String = ""
-    @State var session: String = "AM"
+    @State var session: Session = .AM
     
     // Default to the current year
     @State var batch: Int = Calendar.current.dateComponents([.year], from: Date()).year!
@@ -28,8 +31,8 @@ struct AddStudentSheet: View {
                 TextField("Student Index Number", text: $indexNumber)
                 HStack {
                     Picker("Student Session", selection: $session) {
-                        Text("AM").tag("AM")
-                        Text("PM").tag("PM")
+                        Text("AM").tag(Session.AM)
+                        Text("PM").tag(Session.PM)
                     }.pickerStyle(.segmented)
                 }
                 Picker("Student Batch", selection: $batch) {
@@ -39,22 +42,17 @@ struct AddStudentSheet: View {
                 }
             }
             Button("Save Student") {
-                let student = Student(context:moc)
-        
-                let uuid = UUID()
-                student.id = uuid
-                student.name = name
-                student.indexNumber = indexNumber
-                student.batch = Int16(batch)
-                student.session = session
+                
+                let student = Student(id: UUID(), indexNumber: indexNumber, name: name, session: session, batch: Int16(batch))
                 
                 // Todo: make this work
                 writer.startAlert = "Please scan the card to be associated with this student."
-                writer.msg = "\(uuid)"
+                writer.msg = student.uuid.uuidString
                 writer.write()
-                
+                mc.insert(student)
                 do {
-                    try moc.save()
+//                    try moc.save()
+                    try mc.save()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
                     print(error.localizedDescription)

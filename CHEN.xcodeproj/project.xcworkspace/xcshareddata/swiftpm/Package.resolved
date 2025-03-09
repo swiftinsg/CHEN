@@ -1,14 +1,6 @@
 {
+  "originHash" : "5554caaf09a2549f3920ff01854ac6be00d3f0308042c4b8eab97151f0fa4e8a",
   "pins" : [
-    {
-      "identity" : "alerttoast",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/elai950/AlertToast",
-      "state" : {
-        "revision" : "b39252eacd159904afd7d718bba0afabb87f2f2f",
-        "version" : "1.3.9"
-      }
-    },
     {
       "identity" : "swiftnfc",
       "kind" : "remoteSourceControl",
@@ -28,5 +20,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
