@@ -56,15 +56,16 @@ struct ManageStudentsView: View {
                             if searchedStudents.count > 0 {
                                 ForEach(searchedStudents) { student in
                                     StudentRowView(student: student)
+                                        .swipeActions {
+                                            Button(role: .destructive) {
+                                                studentToDelete = student
+                                                showWarningAlert = true
+                                                mc.delete(student)
+                                            } label: {
+                                                Text("Delete")
+                                            }
+                                        }
                                 }
-                                .onDelete(perform: { indexSet in
-                                    for index in indexSet {
-                                        let students = students[index]
-                                        
-                                        studentToDelete = students
-                                    }
-                                    showWarningAlert = true
-                                })
                             } else {
                                 if currentType == .student {
                                     ContentUnavailableView("No Students", systemImage: "person.fill.questionmark")
@@ -75,14 +76,13 @@ struct ManageStudentsView: View {
                             
                         }
                         .searchable(text: $search)
-                        .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")",
+                        .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")?",
                                isPresented: $showWarningAlert) {
+                            Button("Cancel", role: .cancel) {
+                                mc.rollback()
+                            }
                             Button("Delete", role: .destructive) {
-                                guard let studentToDelete else { return }
-                                
-                                mc.delete(studentToDelete)
-                                //                            moc.delete(studentToDelete)
-                                
+
                                 do {
                                     try mc.save()
                                     //                                try moc.save()
