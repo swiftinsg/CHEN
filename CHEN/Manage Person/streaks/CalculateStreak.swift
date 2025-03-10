@@ -36,10 +36,11 @@ import SwiftData
     let lessonFetchDescriptor = FetchDescriptor<Lesson>(predicate: #Predicate<Lesson> { lesson in
         lesson._session == studentSession || lesson._session == fullDay
     }, sortBy: [SortDescriptor(\Lesson.date, order: .reverse)])
-
+    
+    
     do {
         let lessons = try context.fetch(lessonFetchDescriptor)
-
+    
         if lessons.count > 1 {
 
             guard let lessonIndex = lessons.firstIndex(of: lesson) else { throw "Lesson not found in lessons list" }

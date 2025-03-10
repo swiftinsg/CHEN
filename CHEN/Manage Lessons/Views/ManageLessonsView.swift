@@ -46,6 +46,7 @@ struct ManageLessonsView: View {
                                                     showWarningAlert = true
                                                     do {
                                                         try reconstructStreakTimeline(deleting: lesson, withContainer: mc.container)
+                                                        
                                                     } catch {
                                                         print(error.localizedDescription)
                                                     }

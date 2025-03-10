@@ -134,6 +134,11 @@ struct LessonView: View {
                                 continue
                             }
                             mc.delete(attendance)
+                            do {
+                                try mc.save()
+                            } catch {
+                                print(error.localizedDescription)
+                            }
                             let attendancesToRecalculate = student.attendances
                             do {
                                 if student.studentType == .student {

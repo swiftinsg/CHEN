@@ -98,17 +98,22 @@ struct StudentView: View {
                     LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt)
                 }
                 .onDelete(perform: { indexSet in
+                    var studentAttendances = student.attendances
                     for index in indexSet {
                         let attendance = attendedLessons[index]
                         mc.delete(attendance)
-                        
+                        do {
+                            try mc.save()
+                        } catch {
+                            print(error.localizedDescription)
+                        }
+                        studentAttendances.removeAll { att in
+                            att == attendance
+                        }
                     }
                     do {
-                        let studentAttendances = student.attendances
-                        
                         try recalculateStreaks(for: studentAttendances, withContainer: mc.container)
                         try mc.save()
-//                        try moc.save()
                     } catch {
                         print(error.localizedDescription)
                     }

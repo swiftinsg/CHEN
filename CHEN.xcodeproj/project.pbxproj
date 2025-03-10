@@ -81,6 +81,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		141C11B52D7EF536002F3EDF /* streaks */ = {
+			isa = PBXGroup;
+			children = (
+				147B2E3F2CB65C8F007D7E0C /* ReconstructStreakTimeline.swift */,
+				147B2E4A2CB7ACE9007D7E0C /* CalculateStreak.swift */,
+				147B2E4C2CB7BE5D007D7E0C /* RecalculateStreaks.swift */,
+			);
+			path = streaks;
+			sourceTree = "<group>";
+		};
 		147B2E3E2CB65C74007D7E0C /* Helpers & Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -101,9 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				143CF9132D7CA4210075D664 /* MarkAttendance.swift */,
-				147B2E3F2CB65C8F007D7E0C /* ReconstructStreakTimeline.swift */,
-				147B2E4A2CB7ACE9007D7E0C /* CalculateStreak.swift */,
-				147B2E4C2CB7BE5D007D7E0C /* RecalculateStreaks.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -187,6 +194,7 @@
 		1AE456802AA568C9009CEE12 /* Manage Person */ = {
 			isa = PBXGroup;
 			children = (
+				141C11B52D7EF536002F3EDF /* streaks */,
 				1AE456812AA568E5009CEE12 /* Views */,
 			);
 			path = "Manage Person";

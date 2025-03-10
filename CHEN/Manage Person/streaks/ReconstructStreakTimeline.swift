@@ -17,7 +17,7 @@ import SwiftData
     // Get list of "people affected", all of these people need their attendances recalculated
     // This is AM cohort for AM, PM for PM, all for full day
     let session = lesson.session.rawValue
-    let fullDay = LessonSession.fullDay.rawValue
+    let fullDay = Session.fullDay.rawValue
     let studentFetchDescriptor = FetchDescriptor<Student>(predicate: #Predicate<Student> { student in
         student._session == session || session == fullDay
     })
@@ -27,7 +27,8 @@ import SwiftData
     } catch {
         print(error.localizedDescription)
     }
-
+    context.delete(lesson)
+    try! context.save()
     // Go through each student and adjust their attendances after the updated streak
     // Think about this a bit more
     for student in affectedStudents {
@@ -42,7 +43,7 @@ import SwiftData
         var attendancesToRecalculate: [Attendance] = []
         // If lesson not found
         if let deletedLessonAttendanceIndex = attendances.firstIndex(where: { att in
-            att.forLesson == lesson
+            att.forLesson?.uuid == lesson.uuid
         }) {
             // Student attended lesson
             // Find index of deleted lesson, then recalculate streak from ONE lesson before to after
@@ -67,7 +68,7 @@ import SwiftData
             // If there are no lessons before or after, that means that the lesson being deleted would not have affected their streaks, so just return
             // Think about this and how it will affect the streak, right now deleting a streak and leaving no lessons AFTER also activates this when it shouldnt
             if attAfter.count == 0 {
-                print("Streak did not change for \(student), returning")
+                print("Streak did not change for \(student.name), returning")
                 // Move on to next student, their streak did not change as the result of deleting this lesson
                 continue
             }
@@ -92,7 +93,7 @@ import SwiftData
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
-    context.delete(lesson)
+    
 }
 
 @MainActor func reconstructStreakTimeline(inserting lesson: Lesson, withContainer container: ModelContainer) throws {
