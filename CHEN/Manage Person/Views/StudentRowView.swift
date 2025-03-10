@@ -17,6 +17,7 @@ struct StudentRowView: View {
             StudentView(student: student)
         } label: {
             HStack {
+                
                 Text(student.indexNumber)
                     .monospaced()
                 Text(student.name)

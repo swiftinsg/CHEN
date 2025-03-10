@@ -19,6 +19,7 @@ struct ManageStudentsView: View {
     //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     @Query(sort: \Student.indexNumber) var students: [Student]
     @State var showAddSheet: Bool = false
+    @State var currentType: StudentType = .student
     
     @State var showWarningAlert: Bool = false
     @State var studentToDelete: Student?
@@ -27,10 +28,12 @@ struct ManageStudentsView: View {
     var searchedStudents: [Student] {
         switch search {
         case "":
-            return students
+            return students.filter { student in
+                student.studentType == currentType
+            }
         default:
             return students.filter { student in
-                student.name.localizedCaseInsensitiveContains(search) || student.indexNumber.localizedCaseInsensitiveContains(search)
+                (student.name.localizedCaseInsensitiveContains(search) || student.indexNumber.localizedCaseInsensitiveContains(search)) && student.studentType == currentType
             }
         }
     }
@@ -43,31 +46,43 @@ struct ManageStudentsView: View {
             Group {
                 VStack {
                     if students.count != 0 {
-                        
+                        Picker("Student Type", selection: $currentType) {
+                            Text("Student").tag(StudentType.student)
+                            Text("Alumni").tag(StudentType.alumni)
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal)
                         List {
-                            ForEach(searchedStudents) { student in
-                                StudentRowView(student: student)
-                            }
-                            .onDelete(perform: { indexSet in
-                                for index in indexSet {
-                                    let students = students[index]
-                                    
-                                    studentToDelete = students
+                            if searchedStudents.count > 0 {
+                                ForEach(searchedStudents) { student in
+                                    StudentRowView(student: student)
+                                        .swipeActions {
+                                            Button(role: .destructive) {
+                                                studentToDelete = student
+                                                showWarningAlert = true
+                                                mc.delete(student)
+                                            } label: {
+                                                Text("Delete")
+                                            }
+                                        }
                                 }
-                                showWarningAlert = true
-                            })
-                            
+                            } else {
+                                if currentType == .student {
+                                    ContentUnavailableView("No Students", systemImage: "person.fill.questionmark")
+                                } else {
+                                    ContentUnavailableView("No Alumni", systemImage: "person.fill.questionmark")
+                                }
+                            }
                             
                         }
                         .searchable(text: $search)
-                        .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")",
+                        .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")?",
                                isPresented: $showWarningAlert) {
+                            Button("Cancel", role: .cancel) {
+                                mc.rollback()
+                            }
                             Button("Delete", role: .destructive) {
-                                guard let studentToDelete else { return }
-                                
-                                mc.delete(studentToDelete)
-                                //                            moc.delete(studentToDelete)
-                                
+
                                 do {
                                     try mc.save()
                                     //                                try moc.save()
@@ -83,7 +98,6 @@ struct ManageStudentsView: View {
                         
                         .toolbar {
                             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                                EditButton()
                                 Menu {
                                     Button {
                                         showAddSheet = true

@@ -23,18 +23,14 @@ import SwiftData
         set { _session = newValue.rawValue }
     }
     @Relationship(deleteRule: .cascade, inverse: \Attendance.forLesson) var attendances: [Attendance]
-    public init(date: Date, id: UUID, lessonLabel: String, name: String, session: Session) {
+    public init(date: Date, uuid: UUID, lessonLabel: String, name: String, session: Session) {
         self.date = date
-        self.uuid = id
+        self.uuid = uuid
         self.lessonLabel = lessonLabel
         self.name = name
         self._session = session.rawValue
         self.attendances = []
     }
-    
-
-#warning("The property \"ordered\" on Lesson:attendances is unsupported in SwiftData.")
-
 }
 
 enum LessonSession: String {

@@ -41,5 +41,7 @@ enum StreakStatus: String, Codable {
     case added = "Added"
     case broke = "Broke"
     case initialised = "Initialised"
+    
+    // For alumni attendance - no streaking required
     case other = "Other"
 }
