@@ -7,14 +7,15 @@
 
 import SwiftUI
 import SwiftNFC
-import AlertToast
-
+import SwiftData
 struct EditStudentView: View {
     @Environment(\.dismiss) private var dismiss
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     
     @ObservedObject var writer = NFCWriter()
-    @ObservedObject var student: Student
+    @Bindable var student: Student
     
     @State var showCardAlert: Bool = false
     @State var name: String = ""
@@ -24,15 +25,13 @@ struct EditStudentView: View {
     @State var batch: Int = Calendar.current.dateComponents([.year], from: Date()).year!
     
     @State var cardID: String = ""
-    
-    @Binding var alertToast: AlertToast
-    @Binding var showChangeToast: Bool
+
     var body: some View {
         Form {
             Section(header: Text("Student Information")) {
                 
-                TextField("Student Name", text: Binding($student.name)!)
-                TextField("Student Index Number", text: Binding($student.indexNumber)!)
+                TextField("Student Name", text: $student.name)
+                TextField("Student Index Number", text: $student.indexNumber)
                 Picker("Student Batch", selection: $student.batch) {
                     ForEach(2018...2050, id: \.self) {
                         Text(String($0))
@@ -46,17 +45,16 @@ struct EditStudentView: View {
                 
                 do {
                     showCardAlert = true
-                    try moc.save()
                     
-                    // Toast notification after saving
+//                    try moc.save()
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
-                    
-                    showChangeToast = true
-                    alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
-                    
+                    print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
+            
             }
-            .disabled(student.indexNumber! == "" || student.name == "")
+            .disabled(student.indexNumber == "" || student.name == "")
         }
         .onAppear() {
             writer.completionHandler = { error in
@@ -64,22 +62,18 @@ struct EditStudentView: View {
                     if let error = error {
                         print(error.localizedDescription)
                     }
-                    showChangeToast = true
-                    alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "Update successful")
                     dismiss()
                 }
             }
         }
-        .alert("Do you want to re-associate \(student.name!) with another card?", isPresented: $showCardAlert) {
+        .alert("Do you want to re-associate \(student.name) with another card?", isPresented: $showCardAlert) {
             Button("Yes") {
                 // write UUID to card
                 writer.startAlert = "Please scan the card to be associated with this student."
-                writer.msg = "\(student.id!)"
+                writer.msg = "\(student.id)"
                 writer.write()
             }
             Button("No", role: .cancel) {
-                showChangeToast = true
-                alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "Update successful")
                 dismiss()
             }
         }

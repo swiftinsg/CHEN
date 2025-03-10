@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StudentRowView: View {
     
-    @ObservedObject var student: Student
+    @Bindable var student: Student
     var attendance: Date?
     
     var body: some View {
@@ -17,9 +17,10 @@ struct StudentRowView: View {
             StudentView(student: student)
         } label: {
             HStack {
-                Text(student.indexNumber ?? "")
+                
+                Text(student.indexNumber)
                     .monospaced()
-                Text(student.name!)
+                Text(student.name)
                 Spacer()
                 
                 if let attendance {

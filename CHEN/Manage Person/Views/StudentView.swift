@@ -7,9 +7,12 @@
 
 import SwiftUI
 import SwiftNFC
+import SwiftData
 
 struct StudentView: View {
-    @ObservedObject var student: Student
+    @Bindable var student: Student
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     @ObservedObject var writer = NFCWriter()
     var dateFormatter: DateFormatter {
@@ -20,14 +23,15 @@ struct StudentView: View {
     var body: some View {
         Form {
             Section("Name") {
-                Text(student.name ?? "")
+                Text(student.name)
+                
             }
             
             Section("Student Details") {
                 HStack {
                     Text("UUID")
                     Spacer()
-                    Text(student.id?.uuidString ?? "")
+                    Text(student.uuid.uuidString)
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                         .multilineTextAlignment(.trailing)
@@ -35,13 +39,7 @@ struct StudentView: View {
                 }
                 
                 HStack {
-                    Text("Index Number")
-                    Spacer()
-                    Text(student.indexNumber ?? "")
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                        .multilineTextAlignment(.trailing)
-                        .monospaced()
+                    SessionInformationEditableField(title: "Index Number", placeholder: "Index Number", value: $student.indexNumber)
                 }
                 
                 HStack {
@@ -54,44 +52,63 @@ struct StudentView: View {
                         .monospaced()
                 }
                 
-                HStack {
-                    Text("Session")
-                    Spacer()
-                    Text(student.session ?? "No Value")
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                        .multilineTextAlignment(.trailing)
+                if student.studentType == .student {
+                    HStack {
+                        Text("Session")
+                        Spacer()
+                        Text(student.session.rawValue)
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    HStack {
+                        Text("Streak")
+                        Spacer()
+                        Text(getStreak(student))
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                            .multilineTextAlignment(.trailing)
+                    }
                 }
+                
+                
+                
             }
- 
-            Button {
-                if let personId = student.id, let name = student.name {
+            if student.studentType == .student {
+                Button {
+                    let personId = student.id
+                    let name = student.name
                     
                     let writeText = "\(personId)"
                     writer.startAlert = "Please scan the card to be associated with this student."
                     writer.msg = writeText
                     writer.write()
                     writer.endAlert = "Scanned card registered as \(name)."
+                    
+                } label: {
+                    Label("Pair card", systemImage: "lanyardcard")
                 }
-            } label: {
-                Label("Pair card", systemImage: "lanyardcard")
             }
-            
             Section("Attended Lessons") {
-                let attendedLessons = (student.lessonsAttended?.allObjects as? [Attendance] ?? []).sorted(by: {
-                    ($0.recordedAt ?? .distantPast) < ($1.recordedAt ?? .distantPast)
+                let attendedLessons = student.attendances.sorted(by: {
+                    ($0.forLesson!.date) > ($1.forLesson!.date)
                 })
                 
                 ForEach(attendedLessons, id: \.id) { attendanceRecord in
-                    LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt!)
+                    LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt)
                 }
                 .onDelete(perform: { indexSet in
                     for index in indexSet {
                         let attendance = attendedLessons[index]
-                        moc.delete(attendance)
+                        mc.delete(attendance)
+                        
                     }
                     do {
-                        try moc.save()
+                        let studentAttendances = student.attendances
+                        
+                        try recalculateStreaks(for: studentAttendances, withContainer: mc.container)
+                        try mc.save()
+//                        try moc.save()
                     } catch {
                         print(error.localizedDescription)
                     }
@@ -99,7 +116,7 @@ struct StudentView: View {
                 })
             }
             
-
+            
         }
         .onAppear {
             writer.completionHandler = { error in
@@ -108,7 +125,23 @@ struct StudentView: View {
                 }
             }
         }
-        .navigationTitle(student.name ?? "")
+        .navigationTitle(student.name)
+    }
+    
+    func getStreak(_ student: Student) -> String {
+        var attendanceSet = student.attendances
+        
+        // sort attendances by lesson date as they're not ordered
+        attendanceSet.sort { att1, att2 in
+            att1.forLesson!.date > att2.forLesson!.date
+        }
+        if attendanceSet.count > 0 {
+            return String(attendanceSet.first!.streak)
+        } else {
+            return "0"
+        }
+        
+        
     }
     
     

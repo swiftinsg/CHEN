@@ -7,74 +7,120 @@
 
 import SwiftUI
 import CoreData
-import AlertToast
+import SwiftData
 
 struct ManageStudentsView: View {
     
     @State private var bulkImportStudentPresented = false
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
+    @Environment(\.managedObjectContext) private var moc
     
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
+    //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
+    @Query(sort: \Student.indexNumber) var students: [Student]
     @State var showAddSheet: Bool = false
+    @State var currentType: StudentType = .student
+    
+    @State var showWarningAlert: Bool = false
+    @State var studentToDelete: Student?
     var deletedStudent: Int = 0
     
     var searchedStudents: [Student] {
-        let studentsArray = students.compactMap { student in
-            student
-        }
         switch search {
         case "":
-            return studentsArray
+            return students.filter { student in
+                student.studentType == currentType
+            }
         default:
-            return studentsArray.filter { student in
-                student.name!.localizedCaseInsensitiveContains(search)
+            return students.filter { student in
+                (student.name.localizedCaseInsensitiveContains(search) || student.indexNumber.localizedCaseInsensitiveContains(search)) && student.studentType == currentType
             }
         }
     }
     
     @State var showDeleteAlert: Bool = false
     @State var search: String = ""
-    @State var alertToast: AlertToast = AlertToast(displayMode: .hud, type: .regular, title: "")
-    @State var showChangeToast: Bool = false
+    
     var body: some View {
         NavigationStack {
-            ZStack {
+            Group {
                 VStack {
-                    // Implement searches properly (see LessonView)
-                    List(searchedStudents) { student in
-                        NavigationLink {
-                            StudentView(student: student)
-                        } label: {
-                            HStack {
-                                Text(student.indexNumber ?? "")
-                                    .monospaced()
-                                Text(student.name ?? "Unknown Data")
+                    if students.count != 0 {
+                        Picker("Student Type", selection: $currentType) {
+                            Text("Student").tag(StudentType.student)
+                            Text("Alumni").tag(StudentType.alumni)
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal)
+                        List {
+                            if searchedStudents.count > 0 {
+                                ForEach(searchedStudents) { student in
+                                    StudentRowView(student: student)
+                                        .swipeActions {
+                                            Button(role: .destructive) {
+                                                studentToDelete = student
+                                                showWarningAlert = true
+                                                mc.delete(student)
+                                            } label: {
+                                                Text("Delete")
+                                            }
+                                        }
+                                }
+                            } else {
+                                if currentType == .student {
+                                    ContentUnavailableView("No Students", systemImage: "person.fill.questionmark")
+                                } else {
+                                    ContentUnavailableView("No Alumni", systemImage: "person.fill.questionmark")
+                                }
+                            }
+                            
+                        }
+                        .searchable(text: $search)
+                        .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")?",
+                               isPresented: $showWarningAlert) {
+                            Button("Cancel", role: .cancel) {
+                                mc.rollback()
+                            }
+                            Button("Delete", role: .destructive) {
+
+                                do {
+                                    try mc.save()
+                                    //                                try moc.save()
+                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                } catch {
+                                    print(error.localizedDescription)
+                                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                                }
+                            }
+                        } message: {
+                            Text("This is irreversible.")
+                        }
+                        
+                        .toolbar {
+                            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                                Menu {
+                                    Button {
+                                        showAddSheet = true
+                                    } label: {
+                                        Label("Manually", systemImage: "person")
+                                    }
+                                    Button {
+                                        bulkImportStudentPresented = true
+                                    } label: {
+                                        Label("From Spreadsheet", systemImage: "tablecells")
+                                    }
+                                } label: {
+                                    Image(systemName: "plus")
+                                }
+                                
                             }
                         }
                         
-                        .swipeActions {
-                            NavigationStack {
-                                NavigationLink {
-                                    EditStudentView(student: student, alertToast: $alertToast, showChangeToast: $showChangeToast)
-                                        .navigationTitle("Edit Student")
-                                } label: {
-                                    Button {
-                                        
-                                    } label: {
-                                        Text("Edit")
-                                    }
-                                    
-                                }
-                            }
-                            Button(role: .destructive) {
-                                print("delete button pressed")
-                            } label: {
-                                Text("Delete")
-                            }
-                        }
-                    }
-                    .toolbar {
-                        ToolbarItemGroup(placement: .navigationBarTrailing) {
-                            EditButton()
+                        
+                    } else {
+                        ContentUnavailableView {
+                            Label("No Students", systemImage: "person.fill.questionmark")
+                        } actions: {
                             Menu {
                                 Button {
                                     showAddSheet = true
@@ -87,26 +133,24 @@ struct ManageStudentsView: View {
                                     Label("From Spreadsheet", systemImage: "tablecells")
                                 }
                             } label: {
-                                Image(systemName: "plus")
+                                Text("Add Student")
                             }
-
+                            
                         }
                     }
-                    .sheet(isPresented: $showAddSheet) {
-                        NavigationStack {
-                            AddStudentSheet(showChangeToast: $showChangeToast, alertToast: $alertToast)
-                                .navigationTitle("Create Student")
-                        }
-                    }
-                    .searchable(text: $search)
                 }
-            }.navigationTitle(Text("Students"))
+                .navigationTitle(Text("Students"))
+            }
+            .sheet(isPresented: $showAddSheet) {
+                NavigationStack {
+                    AddStudentSheet()
+                        .navigationTitle("Create Student")
+                }
+            }
+            .sheet(isPresented: $bulkImportStudentPresented) {
+                BulkImportStudentView()
+            }
         }
-        .toast(isPresenting: $showChangeToast, alert: {
-            alertToast
-        })
-        .sheet(isPresented: $bulkImportStudentPresented) {
-            BulkImportStudentView()
-        }
+        
     }
 }

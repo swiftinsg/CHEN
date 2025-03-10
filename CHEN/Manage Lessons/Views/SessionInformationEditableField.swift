@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SessionInformationEditableField: View {
     
     var title: String
     var placeholder: String
     
-    @Environment(\.managedObjectContext) private var moc
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     
-    @Binding var value: String?
+    @Binding var value: String
     
     var body: some View {
         HStack {
@@ -22,7 +24,7 @@ struct SessionInformationEditableField: View {
             Spacer()
             
             let bindingUnwrappedValue = Binding {
-                value ?? ""
+                value
             } set: { newValue in
                 value = newValue
             }
@@ -30,7 +32,7 @@ struct SessionInformationEditableField: View {
             TextField(placeholder, text: bindingUnwrappedValue)
                 .textSelection(.enabled)
                 .onSubmit {
-                    try? moc.save()
+                    try? mc.save()
                 }
                 .multilineTextAlignment(.trailing)
                 .foregroundStyle(.secondary)

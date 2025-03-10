@@ -7,22 +7,23 @@
 
 import SwiftUI
 import SwiftNFC
-import AlertToast
-
+import SwiftData
 struct AddStudentSheet: View {
     @Environment(\.dismiss) private var dismiss
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     @ObservedObject var writer = NFCWriter()
     @State var name: String = ""
     @State var indexNumber: String = ""
-    
+    @State var session: Session = .AM
+    @State var studentType: StudentType = .student
     // Default to the current year
     @State var batch: Int = Calendar.current.dateComponents([.year], from: Date()).year!
     
     @State var cardID: String = ""
     
-    @Binding var showChangeToast: Bool
-    @Binding var alertToast: AlertToast
+    
     var body: some View {
         Form {
             Section(header: Text("Student Information")) {
@@ -33,27 +34,47 @@ struct AddStudentSheet: View {
                         Text(String($0))
                     }
                 }
-                
+            
+            }
+            
+            Section(header: Text("Student Type")) {
+                HStack {
+                    Picker("Student Type", selection: $studentType) {
+                        Text("Student").tag(StudentType.student)
+                        Text("Alumni").tag(StudentType.alumni)
+                    }.pickerStyle(.segmented)
+                }
+            }
+            
+            if studentType == .student {
+                Section(header: Text("Student Session")) {
+                    HStack {
+                        Picker("Student Session", selection: $session) {
+                            Text("AM").tag(Session.AM)
+                            Text("PM").tag(Session.PM)
+                        }.pickerStyle(.segmented)
+                    }
+                }
             }
             Button("Save Student") {
-                let student = Student(context:moc)
-        
-                let uuid = UUID()
-                student.id = uuid
-                student.name = name
-                student.indexNumber = indexNumber
-                student.batch = Int16(batch)
+                if studentType == .alumni {
+                    session = .fullDay
+                }
+                let student = Student(uuid: UUID(), indexNumber: indexNumber, name: name, session: session, batch: Int16(batch), studentType: studentType)
                 
-                // Todo: make this work
-                writer.startAlert = "Please scan the card to be associated with this student."
-                writer.msg = "\(uuid)"
-                writer.write()
-                
+                if studentType == .student {
+                    writer.startAlert = "Please scan the card to be associated with this student."
+                    writer.msg = student.uuid.uuidString
+                    writer.write()
+                }
+                mc.insert(student)
                 do {
-                    try moc.save()
+//                    try moc.save()
+                    try mc.save()
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
-                    showChangeToast = true
-                    alertToast = AlertToast(displayMode: .hud, type: .error(.red), title: "An error occured: \(error.localizedDescription)")
+                    print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
                 dismiss()
                 
@@ -61,13 +82,19 @@ struct AddStudentSheet: View {
             }
             .disabled(indexNumber == "" || name == "")
         }
+        .onChange(of: studentType, { _, newValue in
+            // reset session
+            if newValue == .student {
+                session = .AM
+            }
+        })
         .onAppear() {
             writer.completionHandler = { error in
                 if let error = error {
                     print(error.localizedDescription)
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
-                showChangeToast = true
-                alertToast = AlertToast(displayMode: .hud, type: .complete(.green), title: "User created")
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
                 dismiss()
             }
         }
