@@ -29,7 +29,7 @@ import SwiftData
         print(error.localizedDescription)
     }
     context.delete(lesson)
-    try! context.save()
+
     // Go through each student and adjust their attendances after the updated streak
     // Think about this a bit more
     for student in affectedStudents {

@@ -14,7 +14,7 @@ import SwiftData
 @MainActor func recalculateStreaks(for attendances: [Attendance], withContainer container: ModelContainer) throws {
     
     var attendances = attendances
-    print("recalc streaks called with \(attendances)")
+
     // reverse chronological order
     attendances.sort { att1, att2 in
         att1.forLesson!.date < att2.forLesson!.date

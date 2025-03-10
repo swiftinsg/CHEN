@@ -26,6 +26,11 @@ import SwiftData
     // Sort attendances by chronological order (1st entry = latest lesson)
     var studentAttendances = student.attendances
 
+    // Remove the attendance for the deleted lesson if there is any
+    if let deletedLessonIndex = studentAttendances.firstIndex(where: { $0.forLesson!.isDeleted }) {
+        print("deletion detection")
+        studentAttendances.remove(at: deletedLessonIndex)
+    }
     studentAttendances.sort {
         $0.forLesson!.date > $1.forLesson!.date
     }

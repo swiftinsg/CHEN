@@ -44,6 +44,7 @@ struct ManageLessonsView: View {
                                                     
                                                     lessonToDelete = lesson
                                                     showWarningAlert = true
+                                                    mc.autosaveEnabled = false
                                                     do {
                                                         try reconstructStreakTimeline(deleting: lesson, withContainer: mc.container)
                                                         
@@ -102,6 +103,7 @@ struct ManageLessonsView: View {
                 Button("Delete", role: .destructive) {
                     do {
                         try mc.save()
+                        mc.autosaveEnabled = true
                     } catch {
                         print(error.localizedDescription)
                     }
