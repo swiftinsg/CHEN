@@ -195,6 +195,7 @@
 		1AE456812AA568E5009CEE12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				32A2A5B32BAAC15400C935FD /* StudentRowView.swift */,
 				1A1A5B122A90D75800B6FDDD /* StudentView.swift */,
 				1AE4569A2AC92C33009CEE12 /* AddStudentSheet.swift */,
 				1A1A5B102A90D06A00B6FDDD /* ManageStudentsView.swift */,
@@ -227,7 +228,6 @@
 				1AE456982AC92059009CEE12 /* LessonView.swift */,
 				32A2A5B72BAAC57B00C935FD /* SessionInformationEditableField.swift */,
 				147B2E3E2CB65C74007D7E0C /* Helpers & Extensions */,
-				32A2A5B32BAAC15400C935FD /* StudentRowView.swift */,
 				32A2A5B52BAAC3C000C935FD /* LessonRowView.swift */,
 				1AE4569C2AC951C7009CEE12 /* AddLessonSheet.swift */,
 			);
