@@ -19,7 +19,7 @@ import SwiftData
     let session = lesson.session.rawValue
     let fullDay = Session.fullDay.rawValue
     let studentFetchDescriptor = FetchDescriptor<Student>(predicate: #Predicate<Student> { student in
-        student._session == session || session == fullDay
+        (student._session == session || session == fullDay) && student._studentType == studentType
     })
     var affectedStudents: [Student] = []
     do {
