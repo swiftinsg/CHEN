@@ -46,7 +46,7 @@ struct AddLessonSheet: View {
             Button("Save Lesson") {
                 
                 // Recalc streaks after lesson creation
-                let lesson = Lesson(date: date, id: UUID(), lessonLabel: lessonLabel, name: name, session: lessonSession)
+                let lesson = Lesson(date: date, uuid: UUID(), lessonLabel: lessonLabel, name: name, session: lessonSession)
                 mc.insert(lesson)
                 do {
                     try reconstructStreakTimeline(inserting: lesson, withContainer: mc.container)

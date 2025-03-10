@@ -31,8 +31,8 @@ import SwiftData
     }
     var streak: Int16? = 0
     @Relationship(deleteRule: .cascade, inverse: \Attendance.person) var attendances: [Attendance]
-    public init(id: UUID, indexNumber: String, name: String, session: Session, batch: Int16, studentType: StudentType = .student) {
-        self.uuid = id
+    public init(uuid: UUID, indexNumber: String, name: String, session: Session, batch: Int16, studentType: StudentType = .student) {
+        self.uuid = uuid
         self.indexNumber = indexNumber
         self.name = name
         self._session = session.rawValue

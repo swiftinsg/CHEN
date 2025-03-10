@@ -60,7 +60,7 @@ struct AddStudentSheet: View {
                 if studentType == .alumni {
                     session = .fullDay
                 }
-                let student = Student(id: UUID(), indexNumber: indexNumber, name: name, session: session, batch: Int16(batch), studentType: studentType)
+                let student = Student(uuid: UUID(), indexNumber: indexNumber, name: name, session: session, batch: Int16(batch), studentType: studentType)
                 
                 if studentType == .student {
                     writer.startAlert = "Please scan the card to be associated with this student."
