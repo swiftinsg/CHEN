@@ -98,7 +98,6 @@ struct ManageStudentsView: View {
                         
                         .toolbar {
                             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                                EditButton()
                                 Menu {
                                     Button {
                                         showAddSheet = true

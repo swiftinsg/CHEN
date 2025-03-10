@@ -76,7 +76,6 @@ struct ManageLessonsView: View {
                     }
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {
-                            EditButton()
                             Button {
                                 showAddLessonSheet = true
                             } label: {
