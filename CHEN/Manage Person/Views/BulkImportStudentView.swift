@@ -15,6 +15,7 @@ struct BulkImportStudentView: View {
     
     @Environment(\.managedObjectContext) private var moc
     
+    @Environment(\.dismiss) private var dismiss
     @State private var state = ImportState.selectingFile
     
     @State private var url: URL?
@@ -34,7 +35,18 @@ struct BulkImportStudentView: View {
                             Label(url == nil ? "Choose from Files" : "Change File", systemImage: "doc.text")
                         }
                     } footer: {
-                        Text("Choose a .tsv file formatted with exactly 4 columns \"name\", \"indexNumber\", \"session\", \"batch\"")
+                        VStack {
+                            Text("""
+                                 Choose a .tsv file formatted with exactly 4 columns:
+                                 **`name`, `indexNumber`, `session`, `batch`**,
+                                 OR exactly 5 columns:
+                                 **`name`, `indexNumber`, `session`, `batch`, `type`**.
+                                 
+                                 `type` should be exactly **`Student`** or **`Alumni`**.
+                                 `session` should be either **`AM`** or **`PM`**. This field is ignored if the record's `type` is **`Alumni`**.
+                                 """)
+                        }
+                        
                     }
                     .fileImporter(isPresented: $isImporterPresented,
                                   allowedContentTypes: [.tabSeparatedText]) { result in
@@ -65,9 +77,9 @@ struct BulkImportStudentView: View {
                 Text("Importing Data…")
                     .font(.title)
                     .fontWeight(.bold)
-                Text("Please do not close this app")
+                Text("Please do not close this app.")
                 Spacer()
-                Text("Processing Record \(currentRecord)")
+                Text("Processing record #\(currentRecord)...")
             }
             .multilineTextAlignment(.center)
         case .complete:
@@ -75,10 +87,12 @@ struct BulkImportStudentView: View {
                 Image(systemName: "checkmark.circle")
                     .foregroundStyle(Color.accentColor)
                     .font(.largeTitle)
-                Text("Imported \(currentRecord)")
+                Text("Imported \(currentRecord) records.")
                     .font(.title)
                     .fontWeight(.bold)
-                Text("Please do not close this app")
+                Button("Done") {
+                    dismiss()
+                }
             }
             .multilineTextAlignment(.center)
         case .error(let message):
@@ -126,14 +140,19 @@ struct BulkImportStudentView: View {
             url.stopAccessingSecurityScopedResource()
             
             var lines = contents.components(separatedBy: "\r\n")
+            var includesStudentType = false
             
-            guard lines.removeFirst() == "name\tindexNumber\tsession\tbatch" else {
+            let header = lines.removeFirst()
+            
+            if header == "name\tindexNumber\tsession\tbatch\ttype" {
+                includesStudentType = true
+            } else if header != "name\tindexNumber\tsession\tbatch" {
                 await MainActor.run {
                     state = .error("File is not in the right format")
                 }
                 return
             }
-            
+
             for (n, line) in lines.enumerated() {
                 await MainActor.run {
                     currentRecord = n + 1
@@ -145,7 +164,14 @@ struct BulkImportStudentView: View {
                 let session = Session(rawValue: data[2]) ?? .AM
                 let batch = Int16(data[3])!
                 
-                let newStudent = Student(id: UUID(), indexNumber: indexNumber, name: name, session: session, batch: batch)
+                let newStudent = Student(uuid: UUID(), indexNumber: indexNumber, name: name, session: session, batch: batch)
+                
+                if includesStudentType {
+                    let studentType = StudentType(rawValue: data[4]) ?? .student
+                    newStudent.studentType = studentType
+                    if studentType == .alumni { newStudent.session = .fullDay }
+                }
+                
                 mc.insert(newStudent)
                 
                 do {
