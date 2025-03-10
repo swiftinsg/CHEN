@@ -12,7 +12,7 @@ struct HomeView: View {
         TabView {
             ManageLessonsView()
                 .tabItem {
-                    Label("Lessons", systemImage: "rectangle.inset.filled.and.person.filled")
+                    Label("Lessons", systemImage: "inset.filled.rectangle.and.person.filled")
                 }
                 .navigationTitle("Lessons")
             ManageStudentsView()

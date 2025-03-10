@@ -8,19 +8,22 @@
 import Foundation
 import SwiftUI
 import CoreData
+import SwiftData
 
-func recalculateStreaks(for attendances: [Attendance], withContext moc: NSManagedObjectContext) throws {
+// TODO: rework this for SwiftData
+@MainActor func recalculateStreaks(for attendances: [Attendance], withContainer container: ModelContainer) throws {
+    
     var attendances = attendances
     
     // reverse chronological order
     attendances.sort { att1, att2 in
-        att1.forLesson!.date! < att2.forLesson!.date!
+        att1.forLesson!.date < att2.forLesson!.date
     }
     for att in attendances {
         do {
-            try calculateStreak(for: att, withContext: moc)
+            try calculateStreak(for: att, withContainer: container)
         } catch {
-            print(error.localizedDescription)
+            print("Error whilst recalculating streaks: \(error.localizedDescription)")
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }

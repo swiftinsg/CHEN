@@ -7,9 +7,12 @@
 
 import SwiftUI
 import SwiftNFC
+import SwiftData
 
 struct StudentView: View {
-    @ObservedObject var student: Student
+    @Bindable var student: Student
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     @ObservedObject var writer = NFCWriter()
     var dateFormatter: DateFormatter {
@@ -20,14 +23,15 @@ struct StudentView: View {
     var body: some View {
         Form {
             Section("Name") {
-                Text(student.name ?? "")
+                Text(student.name)
+                
             }
             
             Section("Student Details") {
                 HStack {
                     Text("UUID")
                     Spacer()
-                    Text(student.id?.uuidString ?? "")
+                    Text(student.uuid.uuidString)
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                         .multilineTextAlignment(.trailing)
@@ -51,7 +55,7 @@ struct StudentView: View {
                 HStack {
                     Text("Session")
                     Spacer()
-                    Text(student.session ?? "No Session")
+                    Text(student.session.rawValue)
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                         .multilineTextAlignment(.trailing)
@@ -66,41 +70,41 @@ struct StudentView: View {
                         .multilineTextAlignment(.trailing)
                 }
             }
- 
+            
             Button {
-                if let personId = student.id, let name = student.name {
-                    
-                    let writeText = "\(personId)"
-                    writer.startAlert = "Please scan the card to be associated with this student."
-                    writer.msg = writeText
-                    writer.write()
-                    writer.endAlert = "Scanned card registered as \(name)."
-                }
+                let personId = student.id
+                let name = student.name
+                
+                let writeText = "\(personId)"
+                writer.startAlert = "Please scan the card to be associated with this student."
+                writer.msg = writeText
+                writer.write()
+                writer.endAlert = "Scanned card registered as \(name)."
+                
             } label: {
                 Label("Pair card", systemImage: "lanyardcard")
             }
             
             Section("Attended Lessons") {
-                let attendedLessons = (student.attendances?.allObjects as? [Attendance] ?? []).sorted(by: {
-                    ($0.forLesson!.date!) > ($1.forLesson!.date!)
+                let attendedLessons = student.attendances.sorted(by: {
+                    ($0.forLesson!.date) > ($1.forLesson!.date)
                 })
                 
                 ForEach(attendedLessons, id: \.id) { attendanceRecord in
-                    LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt!)
+                    LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt)
                 }
                 .onDelete(perform: { indexSet in
                     for index in indexSet {
                         let attendance = attendedLessons[index]
-                        moc.delete(attendance)
+                        mc.delete(attendance)
                         
                     }
                     do {
-                        guard let studentAttendances = student.attendances else { throw "Student attendances do not exist" }
-                        let attendances = studentAttendances.allObjects.map {
-                            $0 as! Attendance
-                        }
-                        try recalculateStreaks(for: attendances, withContext: moc)
-                        try moc.save()
+                        let studentAttendances = student.attendances ?? []
+                        
+                        try recalculateStreaks(for: studentAttendances, withContainer: mc.container)
+                        try mc.save()
+//                        try moc.save()
                     } catch {
                         print(error.localizedDescription)
                     }
@@ -108,7 +112,7 @@ struct StudentView: View {
                 })
             }
             
-
+            
         }
         .onAppear {
             writer.completionHandler = { error in
@@ -117,20 +121,18 @@ struct StudentView: View {
                 }
             }
         }
-        .navigationTitle(student.name ?? "")
+        .navigationTitle(student.name)
     }
     
     func getStreak(_ student: Student) -> String {
-        guard let attendanceSet = student.attendances else { return "0" }
-        var attendances = attendanceSet.map {
-            $0 as! Attendance
-        }
+        var attendanceSet = student.attendances
+        
         // sort attendances by lesson date as they're not ordered
-        attendances.sort { att1, att2 in
-            att1.forLesson!.date! > att2.forLesson!.date!
+        attendanceSet.sort { att1, att2 in
+            att1.forLesson!.date > att2.forLesson!.date
         }
-        if attendances.count > 0 {
-            return String(attendances.first!.streak)
+        if attendanceSet.count > 0 {
+            return String(attendanceSet.first!.streak)
         } else {
             return "0"
         }

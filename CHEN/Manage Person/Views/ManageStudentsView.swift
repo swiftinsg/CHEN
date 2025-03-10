@@ -7,13 +7,17 @@
 
 import SwiftUI
 import CoreData
+import SwiftData
 
 struct ManageStudentsView: View {
     
     @State private var bulkImportStudentPresented = false
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
+    //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
+    @Query(sort: \Student.indexNumber) var students: [Student]
     @State var showAddSheet: Bool = false
     
     @State var showWarningAlert: Bool = false
@@ -21,15 +25,12 @@ struct ManageStudentsView: View {
     var deletedStudent: Int = 0
     
     var searchedStudents: [Student] {
-        let studentsArray = students.compactMap { student in
-            student
-        }
         switch search {
         case "":
-            return studentsArray
+            return students
         default:
-            return studentsArray.filter { student in
-                student.name!.localizedCaseInsensitiveContains(search) || student.indexNumber!.localizedCaseInsensitiveContains(search)
+            return students.filter { student in
+                student.name.localizedCaseInsensitiveContains(search) || student.indexNumber.localizedCaseInsensitiveContains(search)
             }
         }
     }
@@ -39,45 +40,73 @@ struct ManageStudentsView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            Group {
                 VStack {
-
-                    List {
-                        ForEach(searchedStudents) { student in
-                            StudentRowView(student: student)
-                        }
-                        .onDelete(perform: { indexSet in
-                            for index in indexSet {
-                                let students = students[index]
-                                
-                                studentToDelete = students
-                            }
-                            showWarningAlert = true
-                        })
-                       
+                    if students.count != 0 {
                         
-                    }
-                    .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")",
-                           isPresented: $showWarningAlert) {
-                        Button("Delete", role: .destructive) {
-                            guard let studentToDelete else { return }
+                        List {
+                            ForEach(searchedStudents) { student in
+                                StudentRowView(student: student)
+                            }
+                            .onDelete(perform: { indexSet in
+                                for index in indexSet {
+                                    let students = students[index]
+                                    
+                                    studentToDelete = students
+                                }
+                                showWarningAlert = true
+                            })
                             
-                            moc.delete(studentToDelete)
                             
-                            do {
-                                try moc.save()
-                                UINotificationFeedbackGenerator().notificationOccurred(.success)
-                            } catch {
-                                print(error.localizedDescription)
-                                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                        }
+                        .searchable(text: $search)
+                        .alert("Delete \(studentToDelete?.name ?? "Unknown Lesson")",
+                               isPresented: $showWarningAlert) {
+                            Button("Delete", role: .destructive) {
+                                guard let studentToDelete else { return }
+                                
+                                mc.delete(studentToDelete)
+                                //                            moc.delete(studentToDelete)
+                                
+                                do {
+                                    try mc.save()
+                                    //                                try moc.save()
+                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                } catch {
+                                    print(error.localizedDescription)
+                                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                                }
+                            }
+                        } message: {
+                            Text("This is irreversible.")
+                        }
+                        
+                        .toolbar {
+                            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                                EditButton()
+                                Menu {
+                                    Button {
+                                        showAddSheet = true
+                                    } label: {
+                                        Label("Manually", systemImage: "person")
+                                    }
+                                    Button {
+                                        bulkImportStudentPresented = true
+                                    } label: {
+                                        Label("From Spreadsheet", systemImage: "tablecells")
+                                    }
+                                } label: {
+                                    Image(systemName: "plus")
+                                }
+                                
                             }
                         }
-                    } message: {
-                        Text("This is irreversible.")
-                    }
-                    .toolbar {
-                        ToolbarItemGroup(placement: .navigationBarTrailing) {
-                            EditButton()
+                        
+                        
+                    } else {
+                        ContentUnavailableView {
+                            Label("No Students", systemImage: "person.fill.questionmark")
+                        } actions: {
                             Menu {
                                 Button {
                                     showAddSheet = true
@@ -90,24 +119,24 @@ struct ManageStudentsView: View {
                                     Label("From Spreadsheet", systemImage: "tablecells")
                                 }
                             } label: {
-                                Image(systemName: "plus")
+                                Text("Add Student")
                             }
-
+                            
                         }
                     }
-                    .sheet(isPresented: $showAddSheet) {
-                        NavigationStack {
-                            AddStudentSheet()
-                                .navigationTitle("Create Student")
-                        }
-                    }
-                    .searchable(text: $search)
-                    
                 }
-            }.navigationTitle(Text("Students"))
+                .navigationTitle(Text("Students"))
+            }
+            .sheet(isPresented: $showAddSheet) {
+                NavigationStack {
+                    AddStudentSheet()
+                        .navigationTitle("Create Student")
+                }
+            }
+            .sheet(isPresented: $bulkImportStudentPresented) {
+                BulkImportStudentView()
+            }
         }
-        .sheet(isPresented: $bulkImportStudentPresented) {
-            BulkImportStudentView()
-        }
+        
     }
 }

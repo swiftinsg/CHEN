@@ -8,45 +8,41 @@
 import Foundation
 import SwiftUI
 import CoreData
+import SwiftData
 
-func calculateStreak(for attendance: Attendance, withContext moc: NSManagedObjectContext) throws {
+// TODO: rework this for SwiftData
+@MainActor func calculateStreak(for attendance: Attendance, withContainer container: ModelContainer) throws {
     
-    guard let student = attendance.person else { throw "Attendance not associated with a student" }
-    guard let studentUUID = student.id else { throw "Student has an invalid UUID" }
-    guard let lesson = attendance.forLesson else { throw "Attendance not associated with a lesson" }
+    let context = container.mainContext
+    guard let student = attendance.person, let lesson = attendance.forLesson else {
+        throw "Student or lesson is nil - exiting early"
+    }
+    
+    
     // Calc streak
     // Get last available attendance for user
-    let attFetchRequest: NSFetchRequest<Attendance> = Attendance.fetchRequest()
-    attFetchRequest.predicate = NSPredicate(format: "%K == %@", "id", studentUUID as CVarArg)
-    attFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Attendance.recordedAt, ascending: false)]
     
     // At this point in time the attendance record should exist on MOC already as it's been added
     // Sort attendances by chronological order (1st entry = latest lesson)
-    guard let studentAttendancesSet = student.attendances else { throw "Student attendances do not exist" }
-    var studentAttendances = studentAttendancesSet.allObjects.map {
-        $0 as! Attendance
-    }
+    var studentAttendances = student.attendances
+
     studentAttendances.sort {
-        $0.forLesson!.date! > $1.forLesson!.date!
+        $0.forLesson!.date > $1.forLesson!.date
     }
     
+    let studentSession = student.session.rawValue
+    let fullDay = Session.fullDay.rawValue
     // Get latest lesson
-    
-    let lessonFetchRequest: NSFetchRequest<Lesson> = Lesson.fetchRequest()
-    
-    let sessionPredicate = NSPredicate(format: "%K == %@", "session", student.session!)
-    let fullDayPredicate = NSPredicate(format: "%K == %@", "session", "fd")
-    let sessionOrFullDayPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [sessionPredicate, fullDayPredicate])
-    lessonFetchRequest.predicate = sessionOrFullDayPredicate
-    
-    lessonFetchRequest.sortDescriptors = [.init(keyPath: \Lesson.date, ascending: false)]
-    
+    let lessonFetchDescriptor = FetchDescriptor<Lesson>(predicate: #Predicate<Lesson> { lesson in
+        lesson._session == studentSession || lesson._session == fullDay
+    }, sortBy: [SortDescriptor(\Lesson.date, order: .reverse)])
+
     do {
-        let lessons = try moc.fetch(lessonFetchRequest)
+        let lessons = try context.fetch(lessonFetchDescriptor)
+
         if lessons.count > 1 {
-            
+
             guard let lessonIndex = lessons.firstIndex(of: lesson) else { throw "Lesson not found in lessons list" }
-            
             // If attendance is not in students' attendance index something is wrong
             guard let attendanceIndex = studentAttendances.firstIndex(of: attendance) else { throw "Attendance not found on student" }
             print("lessonIndex is \(lessonIndex)")
@@ -54,7 +50,7 @@ func calculateStreak(for attendance: Attendance, withContext moc: NSManagedObjec
             // If this is not the first lesson
             if lessonIndex == lessons.count - 1 {
                 attendance.streak = 1
-                attendance.streakChangeReason = .initialised
+                attendance.streakStatus = .initialised
                 print("first CHRONOLOGICAL lesson, streak = 1 no matter what")
                 return
             }
@@ -64,18 +60,18 @@ func calculateStreak(for attendance: Attendance, withContext moc: NSManagedObjec
                 // The student has no attendances before this add operation
                 // Set attendance to 1 and move on
                 attendance.streak = 1
-                attendance.streakChangeReason = .initialised
+                attendance.streakStatus = .initialised
                 print("First attendance for student, streak set to 1")
                 return
             } else if attendanceIndex == studentAttendances.count - 1 {
                 // Student is trying to add an attendance that would be their first lesson - streak should be set to 1
                 attendance.streak = 1
-                attendance.streakChangeReason = .initialised
+                attendance.streakStatus = .initialised
                 print("New attendance would be oldest attendance for student - streak set to 1")
                 return
             }
             
-            guard let previousAttendedLesson = studentAttendances[attendanceIndex + 1].forLesson else { throw "Invalid lesson" }
+            let previousAttendedLesson = studentAttendances[attendanceIndex + 1].forLesson
             
             // lessons var contains CHRONOLOGICAL student session history (i.e, every session the student was supposed to attend)
             // if the LAST session the user was supposed to attend has an attendance for the student, keep up the streak
@@ -85,21 +81,22 @@ func calculateStreak(for attendance: Attendance, withContext moc: NSManagedObjec
             if previousChronologicalLesson == previousAttendedLesson {
                 let previousStreak = studentAttendances[attendanceIndex + 1].streak
                 attendance.streak = previousStreak + 1
-                print("Streak for \(attendance.forLesson!.name!) is \(previousStreak + 1)")
-                attendance.streakChangeReason = .added
+                print("Streak for \(attendance.forLesson!.name) is \(previousStreak + 1)")
+                attendance.streakStatus = .added
                 print("added streak")
             } else {
                 print("streak broke, set streak to 1")
-                attendance.streakChangeReason = .broke
+                attendance.streakStatus = .broke
                 attendance.streak = 1
             }
         } else {
             attendance.streak = 1
-            attendance.streakChangeReason = .other
+            attendance.streakStatus = .other
             print("this is the only lesson - set streak to 1")
         }
+        context.insert(attendance)
     } catch {
-        print(error.localizedDescription)
+        print("Error whilst recalculating individual streak: \(error.localizedDescription)")
         UINotificationFeedbackGenerator().notificationOccurred(.error)
     }
     

@@ -7,13 +7,16 @@
 
 import SwiftUI
 import SwiftNFC
+import SwiftData
 
 struct AddLessonSheet: View {
     @Environment(\.dismiss) private var dismiss
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     @State var name: String = ""
     @State var lessonLabel: String = ""
-    @State var lessonSession: String = "AM"
+    @State var lessonSession: Session = .AM
     // Default to the current year
     @State var date: Date = Date()
     
@@ -33,9 +36,9 @@ struct AddLessonSheet: View {
             
             Section("Lesson Session") {
                 Picker("Lesson Session", selection: $lessonSession) {
-                    Text("AM").tag("AM")
-                    Text("PM").tag("PM")
-                    Text("Full-day").tag("fd")
+                    Text("AM").tag(Session.AM)
+                    Text("PM").tag(Session.PM)
+                    Text("Full-day").tag(Session.fullDay)
                 }
                 .pickerStyle(.segmented)
             }
@@ -43,15 +46,12 @@ struct AddLessonSheet: View {
             Button("Save Lesson") {
                 
                 // Recalc streaks after lesson creation
-                let lesson = Lesson(context:moc)
-                lesson.id = UUID()
-                lesson.name = name
-                lesson.date = date
-                lesson.lessonLabel = lessonLabel
-                lesson.session = lessonSession
+                let lesson = Lesson(date: date, id: UUID(), lessonLabel: lessonLabel, name: name, session: lessonSession)
+                mc.insert(lesson)
                 do {
-                    try reconstructStreakTimeline(inserting: lesson, withContext: moc)
-                    try moc.save()
+                    try reconstructStreakTimeline(inserting: lesson, withContainer: mc.container)
+                    try mc.save()
+//                    try moc.save()
                     dismiss()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {

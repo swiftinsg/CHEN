@@ -10,12 +10,10 @@ import SwiftUI
 @main
 struct CHENApp: App {
     
-    @StateObject private var dataController = DataController()
-    
     var body: some Scene {
         WindowGroup {
             HomeView()
-                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
+        .modelContainer(for: [Attendance.self, Lesson.self, Student.self])
     }
 }

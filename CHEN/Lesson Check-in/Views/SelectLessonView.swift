@@ -6,31 +6,26 @@
 //
 
 import SwiftUI
-
+import SwiftData
 struct SelectLessonView: View {
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.date, ascending: true)]) var lessons: FetchedResults<Lesson>
-    
+    @Query(sort: \Lesson.date) var lessons: [Lesson]
+//    @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.date, ascending: true)]) var lessons: FetchedResults<Lesson>
+//    
     var body: some View {
         NavigationStack {
             let lessonDates: [Date] = Set(lessons.compactMap { lesson in
-                
-                if let date = lesson.date {
-                    return Calendar.current.startOfDay(for: date)
-                } else {
-                    return nil
-                }
+                Calendar.current.startOfDay(for: lesson.date)
             }).sorted(by: >)
 
             List {
                 ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                     Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
                         ForEach(lessons) { lesson in
-                            if let currentLessonDate = lesson.date,
-                               Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
+                               if Calendar.current.startOfDay(for: lesson.date) == lessonDate {
                                 NavigationLink {
                                     ScanView(lesson: lesson)
                                 } label: {
-                                    Text(lesson.name ?? "Unknown Data")
+                                    Text(lesson.name)
                                 }
                             }
                         }

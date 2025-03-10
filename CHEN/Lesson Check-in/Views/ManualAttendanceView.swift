@@ -7,44 +7,49 @@
 
 import SwiftUI
 import CoreData
+import SwiftData
 
 struct ManualAttendanceView: View {
     var lesson: Lesson
-    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.name, ascending: true)]) var students: FetchedResults<Student>
+//    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.name, ascending: true)]) var students: FetchedResults<Student>
+    @Query(sort: \Student.name) var students: [Student]
     @State var showAddSheet: Bool = false
     
     @Environment(\.dismiss) private var dismiss
+    // TODO: Migrate CoreData transactions to SwiftData via modelContext
+    @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     
     var searchedStudents: [Student] {
         var studentsArray: [Student] = []
         
         // Filter students based on session
-        switch lesson.session! {
-        case "AM":
+        
+        switch lesson.session {
+        case .AM:
             studentsArray = students.filter {
-                $0.session ?? "Unknown Sesison" == "AM"
+                $0.session == .AM
             }
-        case "PM":
+        case .PM:
             studentsArray = students.filter {
-                $0.session ?? "Unknown Session" == "PM"
+                $0.session == .PM
             }
-        default:
+        case .fullDay:
             // This is the "full day" case or something has gone horribly wrong case
-            studentsArray = students.compactMap({ student in
-                student
-            })
+            studentsArray = students
         }
         
         studentsArray = studentsArray.sorted {
-            ($0.indexNumber ?? "") < ($1.indexNumber ?? "")
+            ($0.indexNumber) < ($1.indexNumber)
         }
         
         // Remove students that are known to have attended already
-        let attendedStudents: [Student] = lesson.attendances?.array.map({ att in
-            let attendance = att as! Attendance
-            return attendance.person!
-        }) ?? []
+        
+        let attendedStudents: [Student] = lesson.attendances.compactMap({ att in
+            
+            return att.person
+            
+        })
         
         studentsArray = studentsArray.filter {
             !attendedStudents.contains($0)
@@ -54,7 +59,7 @@ struct ManualAttendanceView: View {
             return studentsArray
         default:
             return studentsArray.filter { student in
-                student.name!.localizedCaseInsensitiveContains(search) || student.indexNumber!.localizedCaseInsensitiveContains(search)
+                student.name.localizedCaseInsensitiveContains(search) || student.indexNumber.localizedCaseInsensitiveContains(search)
             }
         }
     }
@@ -73,9 +78,9 @@ struct ManualAttendanceView: View {
                         showMarkAlert = true
                     } label: {
                         HStack {
-                            Text(student.indexNumber ?? "")
+                            Text(student.indexNumber)
                                 .monospaced()
-                            Text(student.name!)
+                            Text(student.name)
                             Spacer()
                         }
                     }
@@ -88,49 +93,13 @@ struct ManualAttendanceView: View {
                       primaryButton: .default(Text("Yes"), action: {
                     
                     guard let unwrappedSelectedStudent = selectedStudent else { return }
-                    guard let studentAttendedLessonsSet = unwrappedSelectedStudent.attendances else { return }
-                    var studentAttendedLessons: [Lesson] = studentAttendedLessonsSet.allObjects.compactMap {
-                        let att = $0 as! Attendance
-                        return att.forLesson!
-                    }
-                
-                    // Add attendance record
-                    let attendance = Attendance(context: moc)
-                    attendance.attendanceType = 1
-                    attendance.forLesson = lesson
-                    attendance.person = selectedStudent!
-                    attendance.recordedAt = Date()
-                    
-                    // Check if there are attended lessons AFTER this lesson
-                    // If so they need to be recalculated
-                    // Streak history before this is not affected
-                    studentAttendedLessons = studentAttendedLessons.filter {
-                        $0.date! > lesson.date!
-                    }
-                    if studentAttendedLessons.count > 0 {
-                        // Recalculate ALL streaks (may bridge two streaks together)
-                        do {
-                            guard let studentAttendances = unwrappedSelectedStudent.attendances else { throw "Student attendances do not exist" }
-                            let attendances = studentAttendances.allObjects.map {
-                                $0 as! Attendance
-                            }
-                            try recalculateStreaks(for: attendances, withContext: moc)
-                            try moc.save()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } catch {
-                            print(error.localizedDescription)
-                            UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    } else {
-                        // This incoming streak is the latest, calculate it as per normal
-                        do {
-                            try calculateStreak(for: attendance, withContext: moc)
-                            try moc.save()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } catch {
-                            print(error.localizedDescription)
-                            UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+                    let studentAttendedLessonsSet = unwrappedSelectedStudent.attendances
+
+                    do {
+                        try markAttendance(for: unwrappedSelectedStudent, forLesson: lesson, withContainer: mc.container)
+                        try mc.save()
+                    } catch {
+                        print("Error whilst saving manual attendance: \(error.localizedDescription)")
                     }
                     dismiss()
                 }), secondaryButton: .cancel())
