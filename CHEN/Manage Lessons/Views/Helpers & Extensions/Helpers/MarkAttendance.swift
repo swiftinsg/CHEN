@@ -19,6 +19,12 @@ func markAttendance(for student: Student, forLesson lesson: Lesson, withContaine
 
     context.insert(attendance)
     try context.save()
+    
+    // If student is alumni just exit no need to calculate streaks
+    if student.studentType == .alumni {
+        return
+    }
+    
     let studentAttendedLessonsSet = student.attendances
     var studentAttendedLessons: [Lesson] = studentAttendedLessonsSet.compactMap {
         let att = $0
@@ -40,7 +46,7 @@ func markAttendance(for student: Student, forLesson lesson: Lesson, withContaine
         try context.save()
 //                        try moc.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
-    } else {
+    } else if student.studentType == .student {
         // This incoming streak is the latest, calculate it as per normal
         
         try calculateStreak(for: attendance, withContainer: container)

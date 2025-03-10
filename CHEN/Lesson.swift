@@ -31,10 +31,6 @@ import SwiftData
         self._session = session.rawValue
         self.attendances = []
     }
-    
-
-#warning("The property \"ordered\" on Lesson:attendances is unsupported in SwiftData.")
-
 }
 
 enum LessonSession: String {

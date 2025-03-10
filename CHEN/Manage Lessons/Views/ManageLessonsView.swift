@@ -39,24 +39,40 @@ struct ManageLessonsView: View {
                                     let currentLessonDate = lesson.date
                                     if Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
                                         LessonRowView(lesson: lesson)
-                                        
+                                            .swipeActions {
+                                                Button(role: .destructive) {
+                                                    
+                                                    lessonToDelete = lesson
+                                                    showWarningAlert = true
+                                                    do {
+                                                        try reconstructStreakTimeline(deleting: lesson, withContainer: mc.container)
+                                                    } catch {
+                                                        print(error.localizedDescription)
+                                                    }
+                                                } label: {
+                                                    Text("Delete")
+                                                }
+                                            }
                                     }
                                 }
-                                .onDelete(perform: { indexSet in
-                                    for index in indexSet {
-                                        let lesson = lessons[index]
-                                        
-                                        lessonToDelete = lesson
-                                        do {
-                                            try reconstructStreakTimeline(deleting: lesson, withContainer: mc.container)
-                                        } catch {
-                                            print(error.localizedDescription)
-                                        }
-                                    }
-                                    showWarningAlert = true
-                                })
+                                
                             }
+                            
                         }
+//                        .onDelete(perform: { indexSet in
+//                            // TODO: deleting is bugged because this isn't the proper index
+//                            for index in indexSet {
+//                                let lesson = lessons[index]
+//                                
+//                                lessonToDelete = lesson
+//                                do {
+//                                    try reconstructStreakTimeline(deleting: lesson, withContainer: mc.container)
+//                                } catch {
+//                                    print(error.localizedDescription)
+//                                }
+//                            }
+//                            showWarningAlert = true
+//                        })
                     }
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {

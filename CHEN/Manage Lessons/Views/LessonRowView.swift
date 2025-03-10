@@ -15,7 +15,8 @@ struct LessonRowView: View {
     
     var body: some View {
         NavigationLink {
-            LessonView(lesson: lesson)
+            // Instantiate absentee filter state upon view creation
+            LessonView(lesson: lesson, absenteeFilter: lesson.session)
                 .navigationTitle(lesson.name)
         } label: {
             HStack {

@@ -11,7 +11,7 @@ import SwiftData
 
 struct ManualAttendanceView: View {
     var lesson: Lesson
-//    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.name, ascending: true)]) var students: FetchedResults<Student>
+    //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.name, ascending: true)]) var students: FetchedResults<Student>
     @Query(sort: \Student.name) var students: [Student]
     @State var showAddSheet: Bool = false
     
@@ -26,13 +26,14 @@ struct ManualAttendanceView: View {
         // Filter students based on session
         
         switch lesson.session {
+            //
         case .AM:
             studentsArray = students.filter {
-                $0.session == .AM
+                $0.session == .AM || $0.studentType == .alumni
             }
         case .PM:
             studentsArray = students.filter {
-                $0.session == .PM
+                $0.session == .PM || $0.studentType == .alumni
             }
         case .fullDay:
             // This is the "full day" case or something has gone horribly wrong case
@@ -71,21 +72,55 @@ struct ManualAttendanceView: View {
     var body: some View {
         ZStack {
             VStack {
-                // Implement searches properly (see LessonView)
-                List(searchedStudents) { student in
-                    Button {
-                        selectedStudent = student
-                        showMarkAlert = true
-                    } label: {
-                        HStack {
-                            Text(student.indexNumber)
-                                .monospaced()
-                            Text(student.name)
-                            Spacer()
+                List {
+                    if searchedStudents.count > 0 {
+                        let students = searchedStudents.filter({$0.studentType == .student})
+                        if students.count > 0 {
+                            Section("Students") {
+                                ForEach(students) { student in
+                                    Button {
+                                        selectedStudent = student
+                                        showMarkAlert = true
+                                    } label: {
+                                        HStack {
+                                            Text(student.indexNumber)
+                                                .monospaced()
+                                            Text(student.name)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                                
+                            }
                         }
+                        
+                        let alumni = searchedStudents.filter({$0.studentType == .alumni})
+                        
+                        if alumni.count > 0 {
+                            Section("Alumni") {
+                                ForEach(alumni) { student in
+                                    Button {
+                                        selectedStudent = student
+                                        showMarkAlert = true
+                                    } label: {
+                                        HStack {
+                                            Text(student.indexNumber)
+                                                .monospaced()
+                                            Text(student.name)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // Search query returned no results
+                        ContentUnavailableView("No Results Found", systemImage: "pc", description: Text("No results were found for this search query :("))
+                            .symbolRenderingMode(.multicolor)
                     }
-                }
-                .searchable(text: $search)
+                    
+                }.searchable(text: $search)
+                
             }
             .alert(isPresented: $showMarkAlert) {
                 Alert(title: Text("Attendance"),
@@ -93,7 +128,6 @@ struct ManualAttendanceView: View {
                       primaryButton: .default(Text("Yes"), action: {
                     
                     guard let unwrappedSelectedStudent = selectedStudent else { return }
-                    let studentAttendedLessonsSet = unwrappedSelectedStudent.attendances
 
                     do {
                         try markAttendance(for: unwrappedSelectedStudent, forLesson: lesson, withContainer: mc.container)

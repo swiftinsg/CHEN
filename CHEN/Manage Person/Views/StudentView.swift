@@ -52,39 +52,43 @@ struct StudentView: View {
                         .monospaced()
                 }
                 
-                HStack {
-                    Text("Session")
-                    Spacer()
-                    Text(student.session.rawValue)
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                        .multilineTextAlignment(.trailing)
+                if student.studentType == .student {
+                    HStack {
+                        Text("Session")
+                        Spacer()
+                        Text(student.session.rawValue)
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    HStack {
+                        Text("Streak")
+                        Spacer()
+                        Text(getStreak(student))
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                            .multilineTextAlignment(.trailing)
+                    }
                 }
                 
-                HStack {
-                    Text("Streak")
-                    Spacer()
-                    Text(getStreak(student))
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                        .multilineTextAlignment(.trailing)
+                
+                
+            }
+            if student.studentType == .student {
+                Button {
+                    let personId = student.id
+                    let name = student.name
+                    
+                    let writeText = "\(personId)"
+                    writer.startAlert = "Please scan the card to be associated with this student."
+                    writer.msg = writeText
+                    writer.write()
+                    writer.endAlert = "Scanned card registered as \(name)."
+                    
+                } label: {
+                    Label("Pair card", systemImage: "lanyardcard")
                 }
             }
-            
-            Button {
-                let personId = student.id
-                let name = student.name
-                
-                let writeText = "\(personId)"
-                writer.startAlert = "Please scan the card to be associated with this student."
-                writer.msg = writeText
-                writer.write()
-                writer.endAlert = "Scanned card registered as \(name)."
-                
-            } label: {
-                Label("Pair card", systemImage: "lanyardcard")
-            }
-            
             Section("Attended Lessons") {
                 let attendedLessons = student.attendances.sorted(by: {
                     ($0.forLesson!.date) > ($1.forLesson!.date)
@@ -100,7 +104,7 @@ struct StudentView: View {
                         
                     }
                     do {
-                        let studentAttendances = student.attendances ?? []
+                        let studentAttendances = student.attendances
                         
                         try recalculateStreaks(for: studentAttendances, withContainer: mc.container)
                         try mc.save()

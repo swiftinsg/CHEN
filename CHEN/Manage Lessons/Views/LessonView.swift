@@ -20,9 +20,9 @@ struct LessonView: View {
     
     @State var searchTerm: String = ""
     @State var absenteeFilter: Session = .AM
-    
+    @State var attendanceFilter: StudentType = .student
     @Query(sort: \Student.indexNumber) var students: [Student]
-
+    
     var filteredAttendances: [Attendance] {
         let attendances = lesson.attendances
         switch searchTerm {
@@ -75,16 +75,6 @@ struct LessonView: View {
                         return "This is not a CHEN registered card."
                     }
                     
-
-                    //                    let fetchRequest: NSFetchRequest<Student> = Student.fetchRequest()
-                    //
-                    //                    fetchRequest.predicate = NSPredicate(
-                    //                        format: "%K == %@", "id", studentUUID as CVarArg
-                    //                    )
-                    
-                    
-                    //                        let students = try moc.fetch(fetchRequest)
-                    
                     // wait i had the list of students the whole time for the absentees list
                     guard let foundStudent = students.first(where: { student in
                         student.uuid == studentUUID
@@ -92,10 +82,7 @@ struct LessonView: View {
                         return "Student not found"
                     }
                     
-                    
-
                     do {
-                        //                        try moc.save()
                         try markAttendance(for: foundStudent, forLesson: lesson, withContainer: mc.container)
                         try mc.save()
                     } catch {
@@ -123,13 +110,17 @@ struct LessonView: View {
                 }
             }
             
-            Section("Attendances") {
-                if filteredAttendances.count != 0 {
-                    let filteredSortedAttendance = filteredAttendances.sorted(by: {
-                        ($0.person!.indexNumber) < ($1.person!.indexNumber)
-                    })
+            Section {
+                let filteredSortedAttendances = filteredAttendances.sorted(by: {
+                    ($0.person!.indexNumber) < ($1.person!.indexNumber)
+                }).filter {
+                        $0.person!.studentType == attendanceFilter
+                    }
+                
+                if filteredSortedAttendances.count > 0 {
+                    // filter again by student type
                     
-                    ForEach(filteredSortedAttendance, id: \.id) { attendanceRecord in
+                    ForEach(filteredSortedAttendances, id: \.id) { attendanceRecord in
                         StudentRowView(student: attendanceRecord.person!,
                                        attendance: attendanceRecord.recordedAt)
                     }
@@ -137,16 +128,17 @@ struct LessonView: View {
                     .onDelete(perform: { indexSet in
                         
                         for index in indexSet {
-                            let attendance = filteredSortedAttendance[index]
+                            let attendance = filteredSortedAttendances[index]
                             guard let student = attendance.person else {
                                 // Student doesn't exist anymore?????
                                 continue
                             }
                             mc.delete(attendance)
-                            // TODO: need to recalculate attendance here
                             let attendancesToRecalculate = student.attendances
                             do {
-                                try recalculateStreaks(for: attendancesToRecalculate, withContainer: mc.container)
+                                if student.studentType == .student {
+                                    try recalculateStreaks(for: attendancesToRecalculate, withContainer: mc.container)
+                                }
                                 try mc.save()
                             } catch {
                                 print(error.localizedDescription)
@@ -158,15 +150,30 @@ struct LessonView: View {
                         
                     })
                 } else {
-                    if lesson.attendances.count == 0 {
-                        ContentUnavailableView("No Attendances", systemImage: "pc", description: Text("No one attended this class :("))
-                            .symbolRenderingMode(.multicolor)
-                    } else {
+                    if searchTerm != "" {
                         // Search query returned no results
                         ContentUnavailableView("No Results Found", systemImage: "pc", description: Text("No results were found for this search query :("))
                             .symbolRenderingMode(.multicolor)
+                    } else {
+                        // Current attendance filter has no attendances
+                        ContentUnavailableView("No Attendances", systemImage: "pc", description: Text("No \(attendanceFilter == .student ? "students" : "alumni") attended this class :("))
+                            .symbolRenderingMode(.multicolor)
                     }
                 }
+            } header: {
+                HStack {
+                    Text("Attendances")
+                    Spacer()
+                    Picker("", selection: $attendanceFilter) {
+                        Text("Student")
+                            .tag(StudentType.student)
+                        Text("Alumni")
+                            .tag(StudentType.alumni)
+                        
+                    }
+                    .textCase(.lowercase)
+                }
+                
             }
             
             if searchTerm.isEmpty {
@@ -176,16 +183,18 @@ struct LessonView: View {
                             
                             let contains = lesson.attendances.contains(where: { attendance in
                                 attendance.person == student
-                            }) ?? false
+                            })
                             
-                            if !contains {
+                            let alumni = student.studentType == .alumni
+                            // if no contain AND is not alumni
+                            if !contains && !alumni {
                                 StudentRowView(student: student)
                             }
                         }
                     }
                 } header: {
                     HStack {
-                        Text("Absentees")
+                        Text("Student Absentees")
                         Spacer()
                         Picker("", selection: $absenteeFilter) {
                             Text("Morning")
