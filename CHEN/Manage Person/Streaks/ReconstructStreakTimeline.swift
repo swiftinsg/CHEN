@@ -17,6 +17,7 @@ import SwiftData
     // Get list of "people affected", all of these people need their attendances recalculated
     // This is AM cohort for AM, PM for PM, all for full day
     let session = lesson.session.rawValue
+    let studentType = StudentType.student.rawValue
     let fullDay = Session.fullDay.rawValue
     let studentFetchDescriptor = FetchDescriptor<Student>(predicate: #Predicate<Student> { student in
         (student._session == session || session == fullDay) && student._studentType == studentType
