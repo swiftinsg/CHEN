@@ -76,10 +76,10 @@ struct StudentView: View {
             }
             if student.studentType == .student {
                 Button {
-                    let personId = student.id
+                    let personId = student.uuid.uuidString
                     let name = student.name
                     
-                    let writeText = "\(personId)"
+                    let writeText = personId
                     writer.startAlert = "Please scan the card to be associated with this student."
                     writer.msg = writeText
                     writer.write()
