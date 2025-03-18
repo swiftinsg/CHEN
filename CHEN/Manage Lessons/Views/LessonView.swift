@@ -84,7 +84,6 @@ struct LessonView: View {
                     
                     do {
                         try markAttendance(for: foundStudent, forLesson: lesson, withContainer: mc.container)
-                        try mc.save()
                     } catch {
                         print("An error occured: \(error.localizedDescription)")
                         return error.localizedDescription
@@ -114,8 +113,8 @@ struct LessonView: View {
                 let filteredSortedAttendances = filteredAttendances.sorted(by: {
                     ($0.person!.indexNumber) < ($1.person!.indexNumber)
                 }).filter {
-                        $0.person!.studentType == attendanceFilter
-                    }
+                    $0.person!.studentType == attendanceFilter
+                }
                 
                 if filteredSortedAttendances.count > 0 {
                     // filter again by student type
@@ -182,20 +181,39 @@ struct LessonView: View {
             }
             
             if searchTerm.isEmpty {
+                let absentees = students.filter { student in
+                    if absenteeFilter == .fullDay || student.session == absenteeFilter {
+                        let contains = lesson.attendances.contains(where: { $0.person == student })
+                        let alumni = student.studentType == .alumni
+                        // if no contain AND is not alumni
+                        if !contains && !alumni {
+                            return true
+                        } else {
+                            return false
+                        }
+                    } else {
+                        return false
+                    }
+                }
+                
                 Section {
-                    ForEach(students) { student in
-                        if absenteeFilter == .fullDay || student.session == absenteeFilter {
-                            
-                            let contains = lesson.attendances.contains(where: { attendance in
-                                attendance.person == student
-                            })
-                            
-                            let alumni = student.studentType == .alumni
-                            // if no contain AND is not alumni
-                            if !contains && !alumni {
-                                StudentRowView(student: student)
+                    if absentees.count > 0 {
+                        ForEach(absentees) { student in
+                            if absenteeFilter == .fullDay || student.session == absenteeFilter {
+                                
+                                let contains = lesson.attendances.contains(where: { attendance in
+                                    attendance.person == student
+                                })
+                                
+                                let alumni = student.studentType == .alumni
+                                
+                                if !contains && !alumni {
+                                    StudentRowView(student: student)
+                                }
                             }
                         }
+                    } else {
+                        ContentUnavailableView("No Absentees", systemImage: "person.fill.checkmark")
                     }
                 } header: {
                     HStack {
@@ -212,6 +230,7 @@ struct LessonView: View {
                         .textCase(.lowercase)
                     }
                 }
+                
             }
             
         }

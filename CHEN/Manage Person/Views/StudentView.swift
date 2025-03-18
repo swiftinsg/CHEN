@@ -93,32 +93,35 @@ struct StudentView: View {
                 let attendedLessons = student.attendances.sorted(by: {
                     ($0.forLesson!.date) > ($1.forLesson!.date)
                 })
-                
-                ForEach(attendedLessons, id: \.id) { attendanceRecord in
-                    LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt)
-                }
-                .onDelete(perform: { indexSet in
-                    var studentAttendances = student.attendances
-                    for index in indexSet {
-                        let attendance = attendedLessons[index]
-                        mc.delete(attendance)
+                if attendedLessons.count > 0 {
+                    ForEach(attendedLessons, id: \.id) { attendanceRecord in
+                        LessonRowView(lesson: attendanceRecord.forLesson!, date: attendanceRecord.recordedAt)
+                    }
+                    .onDelete(perform: { indexSet in
+                        var studentAttendances = student.attendances
+                        for index in indexSet {
+                            let attendance = attendedLessons[index]
+                            mc.delete(attendance)
+                            do {
+                                try mc.save()
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                            studentAttendances.removeAll { att in
+                                att == attendance
+                            }
+                        }
                         do {
+                            try recalculateStreaks(for: studentAttendances, withContainer: mc.container)
                             try mc.save()
                         } catch {
                             print(error.localizedDescription)
                         }
-                        studentAttendances.removeAll { att in
-                            att == attendance
-                        }
-                    }
-                    do {
-                        try recalculateStreaks(for: studentAttendances, withContainer: mc.container)
-                        try mc.save()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                    
-                })
+                        
+                    })
+                } else {
+                    ContentUnavailableView("No Attendances", systemImage: "person.crop.circle.badge.questionmark.fill")
+                }
             }
             
             
