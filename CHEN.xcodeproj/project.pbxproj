@@ -38,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		141C11B62D82FF06002F3EDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		143CF90D2D7C85620075D664 /* Attendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Attendance.swift; path = ../Attendance.swift; sourceTree = "<group>"; };
 		143CF90E2D7C85620075D664 /* Lesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Lesson.swift; path = ../Lesson.swift; sourceTree = "<group>"; };
 		143CF90F2D7C85620075D664 /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Student.swift; path = ../Student.swift; sourceTree = "<group>"; };
@@ -134,6 +135,7 @@
 		1A0C263D2A90BC5E002FE50E /* CHEN */ = {
 			isa = PBXGroup;
 			children = (
+				141C11B62D82FF06002F3EDF /* Info.plist */,
 				1A0C28472B9065F200F3BFDF /* Settings */,
 				1AE4568B2AA5C105009CEE12 /* Helpers & Extensions */,
 				1AE456862AA569F2009CEE12 /* Entitlements & Misc Info */,
@@ -505,7 +507,7 @@
 				DEVELOPMENT_TEAM = XL5JK4F896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = CHEN/Info.plist;
 				INFOPLIST_KEY_NFCReaderUsageDescription = "For the scanning and writing of cards to facilitate digital check in";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -541,7 +543,7 @@
 				DEVELOPMENT_TEAM = XL5JK4F896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = CHEN/Info.plist;
 				INFOPLIST_KEY_NFCReaderUsageDescription = "For the scanning and writing of cards to facilitate digital check in";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
