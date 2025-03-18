@@ -12,14 +12,14 @@ import SwiftData
 
 @Model class Attendance {
     var attendanceType: Int16 = 0
-    var recordedAt: Date
+    var recordedAt: Date = Date()
     var streak: Int16 = 0
     var streakStatus: StreakStatus {
         get { StreakStatus(rawValue: _streakStatus)! }
         set { _streakStatus = newValue.rawValue }
     }
     
-    var _streakStatus: StreakStatus.RawValue
+    var _streakStatus: StreakStatus.RawValue = StreakStatus.other.rawValue
     
     var forLesson: Lesson?
     var person: Student?

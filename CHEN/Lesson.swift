@@ -11,12 +11,12 @@ import SwiftData
 
 
 @Model class Lesson {
-    var date: Date
-    var uuid: UUID
-    var lessonLabel: String
-    var name: String
+    var date: Date = Date()
+    var uuid: UUID = UUID()
+    var lessonLabel: String = ""
+    var name: String = ""
     
-    var _session: Session.RawValue
+    var _session: Session.RawValue = Session.AM.rawValue
     
     var session: Session {
         get { Session(rawValue: _session)! }
