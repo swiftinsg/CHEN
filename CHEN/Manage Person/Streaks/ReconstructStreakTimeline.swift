@@ -10,7 +10,6 @@ import CoreData
 import SwiftUI
 import SwiftData
 
-// TODO: rework this for SwiftData
 @MainActor func reconstructStreakTimeline(deleting lesson: Lesson, withContainer container: ModelContainer) throws {
     
     let context = container.mainContext
