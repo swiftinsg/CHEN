@@ -44,14 +44,12 @@ func markAttendance(for student: Student, forLesson lesson: Lesson, withContaine
         let studentAttendances = student.attendances
         try recalculateStreaks(for: studentAttendances, withContainer: container)
         try context.save()
-//                        try moc.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     } else if student.studentType == .student {
         // This incoming streak is the latest, calculate it as per normal
         
         try calculateStreak(for: attendance, withContainer: container)
         try context.save()
-//                        try moc.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         
     }

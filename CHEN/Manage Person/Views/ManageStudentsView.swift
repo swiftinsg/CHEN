@@ -85,7 +85,6 @@ struct ManageStudentsView: View {
 
                                 do {
                                     try mc.save()
-                                    //                                try moc.save()
                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 } catch {
                                     print(error.localizedDescription)

@@ -11,7 +11,6 @@ struct ManageLessonsView: View {
     @Query(sort: \Lesson.lessonLabel) var lessons: [Lesson]
     // @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.session, ascending: true)]) var lessons: FetchedResults<Lesson>
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.managedObjectContext) private var moc
     
     // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc

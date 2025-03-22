@@ -22,7 +22,7 @@ import SwiftData
     // Calc streak
     // Get last available attendance for user
     
-    // At this point in time the attendance record should exist on MOC already as it's been added
+    // At this point in time the attendance record should exist on context already as it's been added
     // Sort attendances by chronological order (1st entry = latest lesson)
     var studentAttendances = student.attendances
 

@@ -13,8 +13,6 @@ import SwiftData
 struct LessonView: View {
     
     @Bindable var lesson: Lesson
-    @Environment(\.managedObjectContext) private var moc
-    // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
     @State var showAlert = false
     
