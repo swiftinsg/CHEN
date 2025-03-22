@@ -20,6 +20,7 @@ struct LessonView: View {
     @State var absenteeFilter: Session = .AM
     @State var attendanceFilter: StudentType = .student
     @Query(sort: \Student.indexNumber) var students: [Student]
+    @State var shouldShowExportSheet = false
     
     var filteredAttendances: [Attendance] {
         let attendances = lesson.attendances
@@ -232,6 +233,16 @@ struct LessonView: View {
             }
             
         }
+        .toolbar(content: {
+            Menu {
+                Button {
+                    shouldShowExportSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+            
+        })
         .searchable(text: $searchTerm)
         
     }

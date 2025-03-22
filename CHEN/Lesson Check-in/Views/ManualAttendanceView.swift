@@ -11,7 +11,6 @@ import SwiftData
 
 struct ManualAttendanceView: View {
     var lesson: Lesson
-    //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.name, ascending: true)]) var students: FetchedResults<Student>
     @Query(sort: \Student.name) var students: [Student]
     @State var showAddSheet: Bool = false
     
