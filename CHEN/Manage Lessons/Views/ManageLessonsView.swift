@@ -33,9 +33,7 @@ struct ManageLessonsView: View {
                         ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                             Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
                                 
-                                ForEach(sortedLessons.sorted(by: {
-                                    $0.date > $1.date
-                                }), id: \.id) { lesson in
+                                ForEach(sortedLessons, id: \.id) { lesson in
                                     let currentLessonDate = lesson.date
                                     if Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
                                         LessonRowView(lesson: lesson)
