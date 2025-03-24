@@ -126,11 +126,13 @@ struct ManualAttendanceView: View {
                       primaryButton: .default(Text("Yes"), action: {
                     
                     guard let unwrappedSelectedStudent = selectedStudent else { return }
-
+                    
                     do {
                         try markAttendance(for: unwrappedSelectedStudent, forLesson: lesson, withContainer: mc.container)
                         try mc.save()
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
                     } catch {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                         print("Error whilst saving manual attendance: \(error.localizedDescription)")
                     }
                     dismiss()
