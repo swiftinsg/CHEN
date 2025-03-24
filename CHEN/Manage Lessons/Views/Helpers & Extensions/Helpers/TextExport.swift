@@ -12,7 +12,9 @@ import UniformTypeIdentifiers
 struct TextExport: Transferable {
 
     var text: String
-    var lessonLabel: String
+    
+    // Might not be used. maybe introduce enum for export types in the future?
+    var lessonLabel: String?
     func generateExport() -> Data {
         return Data(text.utf8)
     }
@@ -22,7 +24,11 @@ struct TextExport: Transferable {
             return text.generateExport()
         }
         .suggestedFileName { text in
-            "\(text.lessonLabel) attendances.txt"
+            if let label = text.lessonLabel {
+                "\(label) attendances.txt"
+            } else {
+                "attendances.txt"
+            }
         }
     }
 }
