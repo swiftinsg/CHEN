@@ -29,7 +29,6 @@ struct ManageLessonsView: View {
             Group {
                 if lessonDates.count != 0 {
                     List {
-                        
                         ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                             Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
                                 
@@ -115,14 +114,9 @@ struct ManageLessonsView: View {
             
             .navigationTitle(Text("Lessons"))
         }
-        .sheet(isPresented: $showAddLessonSheet) {
-            NavigationStack {
-                AddLessonSheet()
-                    .navigationTitle(Text("Create Lesson"))
-            }
-        }
         
     }
+    
     
     
 }

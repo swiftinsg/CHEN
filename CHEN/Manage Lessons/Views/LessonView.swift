@@ -20,7 +20,8 @@ struct LessonView: View {
     @State var absenteeFilter: Session = .AM
     @State var attendanceFilter: StudentType = .student
     @Query(sort: \Student.indexNumber) var students: [Student]
-    @State var shouldShowExportSheet = false
+    @State var showShareSheet = false
+    @State var document: TextFile? = nil
     
     var filteredAttendances: [Attendance] {
         let attendances = lesson.attendances
@@ -234,18 +235,26 @@ struct LessonView: View {
             
         }
         .toolbar(content: {
-            Menu {
-                Button {
-                    shouldShowExportSheet = true
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                }
+            Button {
+                exportLesson()
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .accessibilityLabel(Text("Export Attendances"))
             }
             
         })
         .searchable(text: $searchTerm)
-        
+        .fileExporter(isPresented: $showShareSheet, document: document, contentType: .text, defaultFilename: lesson.name) { result in
+            switch result {
+            case .success(let url):
+                print("saved to \(url)")
+            case .failure(let error):
+                print("failed to save: \(error.localizedDescription)")
+            }
+            
+        }
     }
+    
     func formatSession() -> String {
         var session = ""
         switch lesson.session {
@@ -257,5 +266,28 @@ struct LessonView: View {
             session = "Full day"
         }
         return session
+    }
+    
+    func exportLesson() {
+        let attendances = lesson.attendances
+        let students = students.filter {
+            $0.studentType == .student && ($0.session == lesson.session || lesson.session == .fullDay)
+        }
+        
+        students.flatMap { student in
+            print(student.indexNumber)
+        }
+        
+        var output = ""
+        for student in students {
+            if attendances.contains(where: { att in
+                att.person == student
+            }) {
+                output += "TRUE\n"
+            } else {
+                output += "FALSE\n"
+            }
+        }
+
     }
 }
