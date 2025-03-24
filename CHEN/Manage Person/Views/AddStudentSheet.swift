@@ -10,9 +10,7 @@ import SwiftNFC
 import SwiftData
 struct AddStudentSheet: View {
     @Environment(\.dismiss) private var dismiss
-    // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
-    @Environment(\.managedObjectContext) private var moc
     @ObservedObject var writer = NFCWriter()
     @State var name: String = ""
     @State var indexNumber: String = ""
@@ -69,7 +67,6 @@ struct AddStudentSheet: View {
                 }
                 mc.insert(student)
                 do {
-//                    try moc.save()
                     try mc.save()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {

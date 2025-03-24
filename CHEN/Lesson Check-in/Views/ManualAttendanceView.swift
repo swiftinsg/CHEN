@@ -11,14 +11,12 @@ import SwiftData
 
 struct ManualAttendanceView: View {
     var lesson: Lesson
-    //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.name, ascending: true)]) var students: FetchedResults<Student>
     @Query(sort: \Student.name) var students: [Student]
     @State var showAddSheet: Bool = false
     
     @Environment(\.dismiss) private var dismiss
     // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
-    @Environment(\.managedObjectContext) private var moc
     
     var searchedStudents: [Student] {
         var studentsArray: [Student] = []
@@ -128,11 +126,13 @@ struct ManualAttendanceView: View {
                       primaryButton: .default(Text("Yes"), action: {
                     
                     guard let unwrappedSelectedStudent = selectedStudent else { return }
-
+                    
                     do {
                         try markAttendance(for: unwrappedSelectedStudent, forLesson: lesson, withContainer: mc.container)
                         try mc.save()
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
                     } catch {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                         print("Error whilst saving manual attendance: \(error.localizedDescription)")
                     }
                     dismiss()

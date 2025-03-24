@@ -10,9 +10,7 @@ import SwiftNFC
 import SwiftData
 struct EditStudentView: View {
     @Environment(\.dismiss) private var dismiss
-    // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
-    @Environment(\.managedObjectContext) private var moc
     
     @ObservedObject var writer = NFCWriter()
     @Bindable var student: Student
@@ -45,8 +43,7 @@ struct EditStudentView: View {
                 
                 do {
                     showCardAlert = true
-                    
-//                    try moc.save()
+                    try mc.save()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {
                     print(error.localizedDescription)

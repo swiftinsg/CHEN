@@ -9,9 +9,7 @@ import SwiftUI
 import SwiftData
 struct ManageLessonsView: View {
     @Query(sort: \Lesson.lessonLabel) var lessons: [Lesson]
-    // @FetchRequest(sortDescriptors: [.init(keyPath: \Lesson.session, ascending: true)]) var lessons: FetchedResults<Lesson>
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.managedObjectContext) private var moc
     
     // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
@@ -31,13 +29,10 @@ struct ManageLessonsView: View {
             Group {
                 if lessonDates.count != 0 {
                     List {
-                        
                         ForEach(lessonDates, id: \.timeIntervalSince1970) { lessonDate in
                             Section(lessonDate.formatted(date: .abbreviated, time: .omitted)) {
                                 
-                                ForEach(sortedLessons.sorted(by: {
-                                    $0.date > $1.date
-                                }), id: \.id) { lesson in
+                                ForEach(sortedLessons, id: \.id) { lesson in
                                     let currentLessonDate = lesson.date
                                     if Calendar.current.startOfDay(for: currentLessonDate) == lessonDate {
                                         LessonRowView(lesson: lesson)
@@ -116,17 +111,19 @@ struct ManageLessonsView: View {
             } message: {
                 Text("This is irreversible.")
             }
-            
+            .sheet(isPresented: $showAddLessonSheet, content: {
+                NavigationStack {
+                    AddLessonSheet()
+                        .navigationTitle(Text("Create Lesson"))
+                }
+                
+            })
             .navigationTitle(Text("Lessons"))
         }
-        .sheet(isPresented: $showAddLessonSheet) {
-            NavigationStack {
-                AddLessonSheet()
-                    .navigationTitle(Text("Create Lesson"))
-            }
-        }
+        
         
     }
+    
     
     
 }

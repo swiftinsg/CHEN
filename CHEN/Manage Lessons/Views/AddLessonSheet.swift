@@ -13,7 +13,6 @@ struct AddLessonSheet: View {
     @Environment(\.dismiss) private var dismiss
     // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
-    @Environment(\.managedObjectContext) private var moc
     @State var name: String = ""
     @State var lessonLabel: String = ""
     @State var lessonSession: Session = .AM
@@ -51,7 +50,6 @@ struct AddLessonSheet: View {
                 do {
                     try reconstructStreakTimeline(inserting: lesson, withContainer: mc.container)
                     try mc.save()
-//                    try moc.save()
                     dismiss()
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                 } catch {

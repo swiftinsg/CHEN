@@ -13,7 +13,6 @@ struct StudentView: View {
     @Bindable var student: Student
     // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
-    @Environment(\.managedObjectContext) private var moc
     @ObservedObject var writer = NFCWriter()
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()

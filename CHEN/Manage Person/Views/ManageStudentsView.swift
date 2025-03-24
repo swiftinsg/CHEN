@@ -16,7 +16,6 @@ struct ManageStudentsView: View {
     @Environment(\.modelContext) private var mc
     @Environment(\.managedObjectContext) private var moc
     
-    //    @FetchRequest(sortDescriptors: [.init(keyPath: \Student.indexNumber, ascending: true)]) var students: FetchedResults<Student>
     @Query(sort: \Student.indexNumber) var students: [Student]
     @State var showAddSheet: Bool = false
     @State var currentType: StudentType = .student
@@ -85,7 +84,6 @@ struct ManageStudentsView: View {
 
                                 do {
                                     try mc.save()
-                                    //                                try moc.save()
                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 } catch {
                                     print(error.localizedDescription)

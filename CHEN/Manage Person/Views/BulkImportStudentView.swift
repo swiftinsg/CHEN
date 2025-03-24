@@ -13,8 +13,6 @@ struct BulkImportStudentView: View {
     // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
     
-    @Environment(\.managedObjectContext) private var moc
-    
     @Environment(\.dismiss) private var dismiss
     @State private var state = ImportState.selectingFile
     

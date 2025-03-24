@@ -9,12 +9,11 @@ import SwiftUI
 import SwiftUINFC
 import CoreData
 import SwiftData
+import UniformTypeIdentifiers
 
 struct LessonView: View {
     
     @Bindable var lesson: Lesson
-    @Environment(\.managedObjectContext) private var moc
-    // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
     @State var showAlert = false
     
@@ -22,6 +21,7 @@ struct LessonView: View {
     @State var absenteeFilter: Session = .AM
     @State var attendanceFilter: StudentType = .student
     @Query(sort: \Student.indexNumber) var students: [Student]
+    @State var showShareSheet = false
     
     var filteredAttendances: [Attendance] {
         let attendances = lesson.attendances
@@ -234,9 +234,12 @@ struct LessonView: View {
             }
             
         }
+        .toolbar(content: {
+            ShareLink(item: exportLesson(), preview: .init("\(lesson.lessonLabel) attendances"))
+        })
         .searchable(text: $searchTerm)
-        
     }
+    
     func formatSession() -> String {
         var session = ""
         switch lesson.session {
@@ -248,5 +251,25 @@ struct LessonView: View {
             session = "Full day"
         }
         return session
+    }
+    
+    func exportLesson() -> TextExport {
+        let attendances = lesson.attendances
+        let students = students.filter {
+            $0.studentType == .student && ($0.session == lesson.session || lesson.session == .fullDay)
+        }
+        
+        var output = ""
+        for student in students {
+            if attendances.contains(where: { att in
+                att.person == student
+            }) {
+                output += "TRUE\n"
+            } else {
+                output += "FALSE\n"
+            }
+        }
+        
+        return TextExport(text: output, lessonLabel: lesson.lessonLabel)
     }
 }

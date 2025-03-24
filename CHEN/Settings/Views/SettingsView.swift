@@ -13,9 +13,6 @@ import SwiftData
 
 struct SettingsView: View {
     @ObservedObject var reader = NFCReader()
-    
-    @Environment(\.managedObjectContext) private var moc
-    // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
     @State var showExport = false
     @State var showImport = false
@@ -68,43 +65,6 @@ struct SettingsView: View {
                     Text("SwiftData does not support exporting the entire db. This is a WIP.")
                         .bold()
                 
-//                    Button("Export Data") {
-//                        do {
-//                            let backupFile = try moc.persistentStoreCoordinator?.backupPersistentStore(atIndex: 0)
-//                            print("The backup is at \"\(String(describing: backupFile?.fileURL.path))\"")
-//                            // Do something with backupFile.fileURL
-//                            // Move it to a permanent location, send it to the cloud, etc.
-//                            // ...
-//                            if let file = backupFile {
-//                                exportPath = file.fileURL
-//                                showExport = true
-//                            }
-//                            
-//                        } catch {
-//                            print("Error backing up Core Data store: \(error)")
-//                        }
-//                    }
-//                    .fileImporter(isPresented: $showExport, allowedContentTypes: [.folder]) { result in
-//                        do {
-//                            // save the db file in this thing
-//                            
-//                            var saveURL = try result.get()
-//                            
-//                            let fileName = exportPath.lastPathComponent
-//                            saveURL.append(component: fileName)
-//                            print(saveURL)
-//                            // Get latest file name and append it to the save URL
-//                            try FileManager.default.copyItem(at: exportPath, to: saveURL)
-//                            // Delete temporary directory when done
-//                            try FileManager.default.removeItem(at: exportPath)
-//                            
-//                        } catch {
-//                            print(error.localizedDescription)
-//                        }
-//                    }
-//                    Button("Import Data") {
-//                        
-//                    }
                 }
             }
             .navigationTitle("Settings")
@@ -144,15 +104,7 @@ struct SettingsView: View {
                         print(error.localizedDescription)
                         return
                     }
-                        
-    
-                    //                    let fetchRequest: NSFetchRequest<Student> = Student.fetchRequest()
-                    //                    fetchRequest.predicate = NSPredicate(
-                    //                        format: "%K == %@", "id", studentUUID as CVarArg
-                    //                    )
                     
-                    
-                    //                        let students = try moc.fetch(fetchRequest)
         
                     guard let foundStudent = students.first else {
                         reader.endAlert = "Student not found"
