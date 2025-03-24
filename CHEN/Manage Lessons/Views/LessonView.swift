@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftUINFC
 import CoreData
 import SwiftData
+import UniformTypeIdentifiers
 
 struct LessonView: View {
     
@@ -21,7 +22,6 @@ struct LessonView: View {
     @State var attendanceFilter: StudentType = .student
     @Query(sort: \Student.indexNumber) var students: [Student]
     @State var showShareSheet = false
-    @State var document: TextFile? = nil
     
     var filteredAttendances: [Attendance] {
         let attendances = lesson.attendances
@@ -235,24 +235,9 @@ struct LessonView: View {
             
         }
         .toolbar(content: {
-            Button {
-                exportLesson()
-            } label: {
-                Image(systemName: "square.and.arrow.up")
-                    .accessibilityLabel(Text("Export Attendances"))
-            }
-            
+            ShareLink(item: exportLesson(), preview: .init("\(lesson.lessonLabel) attendances"))
         })
         .searchable(text: $searchTerm)
-        .fileExporter(isPresented: $showShareSheet, document: document, contentType: .text, defaultFilename: lesson.name) { result in
-            switch result {
-            case .success(let url):
-                print("saved to \(url)")
-            case .failure(let error):
-                print("failed to save: \(error.localizedDescription)")
-            }
-            
-        }
     }
     
     func formatSession() -> String {
@@ -268,14 +253,10 @@ struct LessonView: View {
         return session
     }
     
-    func exportLesson() {
+    func exportLesson() -> TextExport {
         let attendances = lesson.attendances
         let students = students.filter {
             $0.studentType == .student && ($0.session == lesson.session || lesson.session == .fullDay)
-        }
-        
-        students.flatMap { student in
-            print(student.indexNumber)
         }
         
         var output = ""
@@ -288,6 +269,7 @@ struct LessonView: View {
                 output += "FALSE\n"
             }
         }
-
+        
+        return TextExport(text: output, lessonLabel: lesson.lessonLabel)
     }
 }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1431F88C2D912715004D067E /* TextFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1431F88B2D912715004D067E /* TextFile.swift */; };
+		1431F88C2D912715004D067E /* TextExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1431F88B2D912715004D067E /* TextExport.swift */; };
 		143CF9102D7C85620075D664 /* Attendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143CF90D2D7C85620075D664 /* Attendance.swift */; };
 		143CF9112D7C85620075D664 /* Lesson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143CF90E2D7C85620075D664 /* Lesson.swift */; };
 		143CF9122D7C85620075D664 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143CF90F2D7C85620075D664 /* Student.swift */; };
@@ -39,7 +39,7 @@
 
 /* Begin PBXFileReference section */
 		141C11B62D82FF06002F3EDF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		1431F88B2D912715004D067E /* TextFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFile.swift; sourceTree = "<group>"; };
+		1431F88B2D912715004D067E /* TextExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextExport.swift; sourceTree = "<group>"; };
 		143CF90D2D7C85620075D664 /* Attendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Attendance.swift; path = ../Attendance.swift; sourceTree = "<group>"; };
 		143CF90E2D7C85620075D664 /* Lesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Lesson.swift; path = ../Lesson.swift; sourceTree = "<group>"; };
 		143CF90F2D7C85620075D664 /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Student.swift; path = ../Student.swift; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 		147B2E492CB7ACD1007D7E0C /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				1431F88B2D912715004D067E /* TextFile.swift */,
+				1431F88B2D912715004D067E /* TextExport.swift */,
 				143CF9132D7CA4210075D664 /* MarkAttendance.swift */,
 			);
 			path = Helpers;
@@ -345,7 +345,7 @@
 				1A1A5B112A90D06A00B6FDDD /* ManageStudentsView.swift in Sources */,
 				1AE456992AC92059009CEE12 /* LessonView.swift in Sources */,
 				1A0C26412A90BC5E002FE50E /* HomeView.swift in Sources */,
-				1431F88C2D912715004D067E /* TextFile.swift in Sources */,
+				1431F88C2D912715004D067E /* TextExport.swift in Sources */,
 				32A2A5B42BAAC15400C935FD /* StudentRowView.swift in Sources */,
 				1A0C263F2A90BC5E002FE50E /* CHENApp.swift in Sources */,
 				1AE4569D2AC951C7009CEE12 /* AddLessonSheet.swift in Sources */,
