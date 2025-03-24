@@ -111,9 +111,16 @@ struct ManageLessonsView: View {
             } message: {
                 Text("This is irreversible.")
             }
-            
+            .sheet(isPresented: $showAddLessonSheet, content: {
+                NavigationStack {
+                    AddLessonSheet()
+                        .navigationTitle(Text("Create Lesson"))
+                }
+                
+            })
             .navigationTitle(Text("Lessons"))
         }
+        
         
     }
     
