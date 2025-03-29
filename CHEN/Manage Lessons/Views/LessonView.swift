@@ -235,7 +235,7 @@ struct LessonView: View {
             
         }
         .toolbar(content: {
-            ShareLink(item: exportLesson(), preview: .init("\(lesson.lessonLabel) attendances"))
+            ShareLink(item: exportLessonFile())
         })
         .searchable(text: $searchTerm)
     }
@@ -253,7 +253,7 @@ struct LessonView: View {
         return session
     }
     
-    func exportLesson() -> TextExport {
+    func exportLessonFile() -> URL {
         let attendances = lesson.attendances
         let students = students.filter {
             $0.studentType == .student && ($0.session == lesson.session || lesson.session == .fullDay)
@@ -270,6 +270,15 @@ struct LessonView: View {
             }
         }
         
-        return TextExport(text: output, lessonLabel: lesson.lessonLabel)
+        let temp = URL(filePath: FileManager.default.temporaryDirectory.path().appending("\(lesson.name) attendances.txt"))
+        print(temp.path())
+        let data = Data(output.utf8)
+        do {
+            try data.write(to: temp, options: [.atomic, .completeFileProtection])
+        } catch {
+            print("ERROR" + error.localizedDescription)
+        }
+        
+        return temp
     }
 }

@@ -58,20 +58,6 @@ struct ManageLessonsView: View {
                             }
                             
                         }
-//                        .onDelete(perform: { indexSet in
-//                            // TODO: deleting is bugged because this isn't the proper index
-//                            for index in indexSet {
-//                                let lesson = lessons[index]
-//                                
-//                                lessonToDelete = lesson
-//                                do {
-//                                    try reconstructStreakTimeline(deleting: lesson, withContainer: mc.container)
-//                                } catch {
-//                                    print(error.localizedDescription)
-//                                }
-//                            }
-//                            showWarningAlert = true
-//                        })
                     }
                     .toolbar {
                         ToolbarItemGroup(placement: .navigationBarTrailing) {
