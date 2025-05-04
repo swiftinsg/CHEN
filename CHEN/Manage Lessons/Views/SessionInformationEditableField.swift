@@ -13,7 +13,6 @@ struct SessionInformationEditableField: View {
     var title: String
     var placeholder: String
     
-    // TODO: Migrate CoreData transactions to SwiftData via modelContext
     @Environment(\.modelContext) private var mc
     
     @Binding var value: String
