@@ -14,6 +14,7 @@ import SwiftData
 struct SettingsView: View {
     @ObservedObject var reader = NFCReader()
     @Environment(\.modelContext) private var mc
+    @Query var students: [Student]
     @State var showExport = false
     @State var showImport = false
     @State var exportPath: URL = URL(string: "https://www.youtube.com/watch?v=_htnaGN8eOs")!
@@ -62,9 +63,9 @@ struct SettingsView: View {
                 }
                 
                 Section("Data") {
-                    Text("SwiftData does not support exporting the entire db. This is a WIP.")
-                        .bold()
-                
+                    ShareLink(item: exportStudentsLink()) {
+                        Label("Export All Students", systemImage: "square.and.arrow.up")
+                    }
                 }
             }
             .navigationTitle("Settings")
@@ -121,6 +122,37 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+    
+    func exportStudentsLink() -> URL {
+        var studentExports: [StudentExport] = []
+        for student in students {
+            var export = StudentExport()
+            export.batch = Int(student.batch)
+            export.cardID = student.cardID ?? ""
+            export.indexNumber = student.indexNumber
+            export.name = student.name
+            export.session = student.session
+            export.studentType = .student
+            export.streak = Int(student.streak ?? 0)
+            export.uuid = student.uuid
+            studentExports.append(export)
+            
+        }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        let exportData = try! JSONEncoder().encode(studentExports)
+        print(String(data: exportData, encoding: .utf8)!)
+        
+        let temp = URL(filePath: FileManager.default.temporaryDirectory.path().appending("CHEN students.json"))
+        print(temp.path())
+        do {
+            try exportData.write(to: temp, options: [.atomic, .completeFileProtection])
+        } catch {
+            print("ERROR" + error.localizedDescription)
+        }
+        
+        return temp
     }
 }
 

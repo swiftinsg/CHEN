@@ -43,6 +43,29 @@ import SwiftData
     
 }
 
+// reduced version of student struct for exporting
+struct StudentExport: Codable {
+    var batch: Int
+    var cardID: String
+    var uuid: UUID
+    var indexNumber: String
+    var name: String
+    var session: Session
+    var studentType: StudentType
+    var streak: Int
+    
+    init() {
+        self.batch = 2020
+        self.cardID = ""
+        self.uuid = UUID()
+        self.indexNumber = ""
+        self.name = ""
+        self.session = .AM
+        self.studentType = .student
+        self.streak = 0
+    }
+}
+
 enum Session: String, Codable {
     // string conversion for purpose of easy backporting of types
     case AM = "AM"
